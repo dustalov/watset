@@ -1,8 +1,7 @@
 #!/usr/bin/awk -f
 # echo -e 'words\ncar;auto;ride' | ./00-extract.awk
 BEGIN {
-    FS  = "\t";
-    OFS = "\t";
+    FS = OFS = "\t";
 }
 NF && $0!~/^#/ && $1~/.+/ {
     split($1, words, ",");

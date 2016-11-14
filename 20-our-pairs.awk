@@ -1,11 +1,9 @@
 #!/usr/bin/awk -f
 BEGIN {
-    FS  = "\t";
-    OFS = "\t";
+    FS = OFS = "\t";
 }
 {
-    len = split($2, words, ", ");
-    for (i = 1; i <= len; i++) {
+    for (i = 1; i <= split($3, words, ", "); i++) {
         for (j = 1; j < i; j++) {
                                      word1 = words[i]; word2 = words[j];
             if (words[j] < words[i]) word1 = words[j]; word2 = words[i];

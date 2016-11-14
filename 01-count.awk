@@ -1,8 +1,7 @@
 #!/usr/bin/awk -f
 # echo -e 'a\tb\na\tb\na\tc' | ./01-count.awk
 BEGIN {
-    FS  = "\t";
-    OFS = "\t";
+    FS = OFS = "\t";
 }
 (!word1 || !word2) {
     word1 = $1;

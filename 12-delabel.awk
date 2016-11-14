@@ -1,7 +1,6 @@
 #!/usr/bin/awk -f
 BEGIN {
-    FS  = "\t";
-    OFS = "\t";
+    FS = OFS = "\t";
 }
 {
     gsub("(#[[:digit:]]+|, $)", "");
