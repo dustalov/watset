@@ -45,7 +45,6 @@ def emit(word):
             candidates   = [(nsid, sim(vector, v.transform(neighbours[nsid]))[0, 0]) for nsid in neighbours]
             nsid, cosine = max(candidates, key=itemgetter(1))
             if cosine > 0:
-            # if cosine > 0 or len(candidates) == 1:
                 nsense = '%s#%d' % (neighbour, nsid)
                 sneighbours[sense][nsense] = weight
 
@@ -56,20 +55,3 @@ with Pool(cpu_count() - 1) as pool:
         for sense, neighbours in sneighbours.items():
             for nsense, weight in neighbours.items():
                 print('%s\t%s\t%f' % (sense, nsense, weight))
-
-# for word, senses in wsi.items():
-#     for sid, words in senses.items():
-#         sense  = '%s#%d' % (word, sid)
-#         vector = v.transform(words)
-#         sneighbours = {}
-
-#         for neighbour, weight in words.items():
-#             neighbours = wsi[neighbour]
-#             items = [(nsid, sim(vector, v.transform(neighbours[nsid]))[0, 0]) for nsid in neighbours]
-#             nsid, cosine = max(items, key=itemgetter(1))
-#             if cosine > 0:
-#                 nsense = '%s#%d' % (neighbour, nsid)
-#                 sneighbours[nsense] = weight
-
-#         for nsense, weight in sneighbours.items():
-#             print('%s\t%s\t%f' % (sense, nsense, weight))
