@@ -42,12 +42,14 @@ def emit(word):
         features.update({word: 1.})
 
         vector = v.transform(features)
+
         sneighbours[sense] = {}
 
         for neighbour, weight in words.items():
-            neighbours   = wsi[neighbour]
-            candidates   = [(nsid, sim(vector, v.transform(neighbours[nsid])).item(0)) for nsid in neighbours]
-            nsid, cosine = max(candidates, key=itemgetter(1))
+            neighbours = wsi[neighbour]
+            candidates = {nsid: sim(vector, v.transform(neighbours[nsid])).item(0) for nsid in neighbours}
+            _, cosine  = max(candidates.items(), key=itemgetter(1))
+
             if cosine > 0:
                 nsense = '%s#%d' % (neighbour, nsid)
                 sneighbours[sense][nsense] = weight
