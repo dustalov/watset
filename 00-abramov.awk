@@ -15,6 +15,10 @@ NR > 1 && NR <= NX {
         $1 = word;
         for (i = 1; i <= NF - 1; i++) {
             for (j = i + 1; j <= NF; j++) {
+                gsub(/(^ +| +$)/, "", $i);
+                gsub(/(^ +| +$)/, "", $j);
+                gsub(/ /, "_", $i);
+                gsub(/ /, "_", $j);
                 print $i, $j;
                 print $j, $i;
             }
