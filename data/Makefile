@@ -17,7 +17,7 @@ unldc.tsv:
 	@echo "# Downloading the UNLDC synsets."
 	curl -sL 'https://github.com/dikonov/Universal-Dictionary-of-Concepts/raw/master/data/misc/russian-synsets.csv' -o unldc.tsv
 
-graph:
+graph: raw
 	@echo "# Generating the word graph."
 	./edges.sh
 
