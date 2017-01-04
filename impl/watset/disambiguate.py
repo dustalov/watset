@@ -16,7 +16,7 @@ wsi = defaultdict(lambda: dict())
 v   = DictVectorizer()
 D   = []
 
-with open('03-cw-wsi.txt') as f:
+with open(sys.argv[1]) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
     for row in reader:
         word, sid, _, words = row
