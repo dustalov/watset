@@ -17,7 +17,7 @@ def resource(filename):
         reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
         for row in reader:
-            word1, word2 = sorted(row[0].lower(), row[1].lower())
+            word1, word2 = sorted((row[0].lower(), row[1].lower()))
 
             pairs.add((word1, word2))
             lexicon.add(word1)
