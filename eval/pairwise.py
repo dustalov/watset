@@ -4,6 +4,7 @@ import argparse
 import csv
 import sys
 from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score
+from multiprocessing import Pool, cpu_count
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
@@ -11,10 +12,10 @@ parser.add_argument('--lexicon', choices=['gold', 'joint'], default='gold')
 parser.add_argument('path', nargs='*')
 args = vars(parser.parse_args())
 
-def resource(filename):
+def resource(path):
     pairs, lexicon = set(), set()
 
-    with open(filename) as f:
+    with open(path) as f:
         reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
         for row in reader:
@@ -24,7 +25,11 @@ def resource(filename):
             lexicon.add(word1)
             lexicon.add(word2)
 
-    return (pairs, lexicon)
+    return (path, pairs, lexicon)
+
+def evaluate(path):
+    pairs, _ = resources[path]
+    return (path, scores(*tables(pairs)))
 
 def tables(pairs):
     union = [pair for pair in (pairs | gold) if pair[0] in lexicon and pair[1] in lexicon]
@@ -41,17 +46,22 @@ def scores(true, pred):
         'f1':        f1_score(true, pred)
     }
 
-gold, gold_lexicon = resource(args['gold'])
+_, gold, lexicon = resource(args['gold'])
 
-resources = {path: resource(path) for path in args['path']}
+resources, results = {}, []
 
-lexicon = gold_lexicon
+with Pool(cpu_count()) as pool:
+    for path, pairs, resource_lexicon in pool.imap_unordered(resource, args['path']):
+        resources[path] = (pairs, resource_lexicon)
 
 if args['lexicon'] == 'joint':
     for _, resource_lexicon in resources.values():
         lexicon = lexicon & resource_lexicon
 
-results = [(path, scores(*tables(pairs))) for path, (pairs, _) in resources.items()]
+with Pool(cpu_count()) as pool:
+    for row in pool.imap_unordered(evaluate, resources.keys()):
+        results.append(row)
+
 results = sorted(results, key=lambda item: item[1]['f1'], reverse=True)
 
 writer = csv.writer(sys.stdout, dialect='excel-tab', lineterminator='\n')
