@@ -24,7 +24,7 @@ graph:
 gold: ruthes
 
 ruthes:
-	@gem list -i nokogiri >/dev/null || echo '# Please do "gem install nokogiri" to work with RuThes'
+	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes"
 	@echo "# Assuming that you have RuThes' XMLs here."
 	./ruthes.rb
 	sort -uso ruthes-pairs.txt ruthes-pairs.txt
