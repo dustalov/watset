@@ -15,9 +15,10 @@ java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers
      de.tudarmstadt.lt.wsi.WSI -clustering cw -cwOption DIST_NOLOG -N 200 -n 200 -e 0 \
      -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-cw-nolog.txt"
 
+# This one is really annoying.
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.wsi.WSI -clustering mcl -N 200 -n 200 -e 0 \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt"
+     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt" >/dev/null
 
 for setup in cw-top cw-log cw-nolog mcl; do
   sort --parallel=$(nproc) -s -o "$CWD/../watset-wsi-$setup.txt" "$CWD/../watset-wsi-$setup.txt"
