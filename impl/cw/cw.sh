@@ -18,6 +18,7 @@ java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers
 for setup in top log nolog; do
   $CWD/../delabel.awk "$CWD/../cw-$setup-clusters.txt" > "$CWD/../cw-$setup-synsets.tsv"
   $CWD/../../pairs.awk "$CWD/../cw-$setup-synsets.tsv" > "$CWD/../cw-$setup-pairs.txt"
+  sort --parallel=$(nproc) -uso "$CWD/../cw-$setup-pairs.txt" "$CWD/../cw-$setup-pairs.txt"
 
   rm -fv "$CWD/../cw-$setup-clusters.txt"
 done
