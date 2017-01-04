@@ -68,3 +68,6 @@ with Pool(cpu_count()) as pool:
 
         if i % 1000 == 0:
             print('%d entries out of %d done.' % (i, len(wsi)), file=sys.stderr)
+
+if len(wsi) % 1000 != 0:
+    print('%d entries out of %d done.' % (len(wsi), len(wsi)), file=sys.stderr)
