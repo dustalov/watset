@@ -21,7 +21,7 @@ graph:
 	@echo "# Generating the word graph."
 	./edges.sh
 
-gold: ruthes
+gold: ruthes yarn
 
 ruthes:
 	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes."
@@ -29,7 +29,14 @@ ruthes:
 	./ruthes.rb
 	sort -uso ruthes-pairs.txt ruthes-pairs.txt
 
+yarn: yarn-synsets.csv
+	./yarn-edges.awk yarn-synsets.csv >yarn-edges.txt
+
+yarn-synsets.csv:
+	curl -sLO https://russianword.net/yarn-synsets.csv
+
 clean:
 	rm -fv wiktionary.tsv dict_ru_ru-0.3.7.oxt abramov.dat unldc.tsv
 	rm -fv edges.txt edges.csv
 	rm -fv ruthes-clusters.txt ruthes-pairs.txt ruthes-isas.txt
+	rm -fv yarn-synsets.csv yarn-edges.txt
