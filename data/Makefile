@@ -24,12 +24,12 @@ graph:
 gold: ruthes
 
 ruthes:
-	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes"
-	@echo "# Assuming that you have RuThes' XMLs here."
+	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes."
+	@echo "# Assuming that you have RuThes in the directory data/ruthes-v2."
 	./ruthes.rb
 	sort -uso ruthes-pairs.txt ruthes-pairs.txt
 
 clean:
 	rm -fv wiktionary.tsv dict_ru_ru-0.3.7.oxt abramov.dat unldc.tsv
 	rm -fv edges.txt edges.csv
-	rm -fv ruthes-clusters.txt ruthes-pairs.txt ruthes-isas.txt ruthes-pairs.txt
+	rm -fv ruthes-clusters.txt ruthes-pairs.txt ruthes-isas.txt
