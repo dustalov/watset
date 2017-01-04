@@ -17,7 +17,7 @@ def resource(filename):
         reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
         for row in reader:
-            word1, word2 = row[0].lower(), row[1].lower()
+            word1, word2 = sorted(row[0].lower(), row[1].lower())
 
             pairs.add((word1, word2))
             lexicon.add(word1)
@@ -53,12 +53,13 @@ results = [(path, scores(*tables(pairs))) for path, (pairs, _) in resources.item
 results = sorted(results, key=lambda item: item[1]['f1'], reverse=True)
 
 writer = csv.writer(sys.stdout, dialect='excel-tab', lineterminator='\n')
-writer.writerow(('path', 'accuracy', 'precision', 'recall', 'f1'))
+writer.writerow(('path', 'accuracy', 'roc_auc', 'precision', 'recall', 'f1'))
 
 for path, values in results:
     writer.writerow((
         path,
         values['accuracy'],
+        values['roc_auc'],
         values['precision'],
         values['recall'],
         values['f1']
