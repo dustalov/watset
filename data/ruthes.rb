@@ -60,7 +60,7 @@ File.open('ruthes-synsets.tsv', 'w') do |synsets|
   concepts.each do |id, concept|
     synset = Set.new([concept])
     synonyms[id].each { |synonym_id| synset.add(entries[synonym_id]) }
-    synsets.puts "%d\t%d\t%s" % [id, synset.length, synset.map { |w| w.gsub(/, /, ' ') }.join(', ')]
+    synsets.puts "%d\t%d\t%s" % [id, synset.length, synset.map { |w| w.gsub(/, /, ' ').gsub(/ /, '_') }.join(', ')]
   end
 end
 
