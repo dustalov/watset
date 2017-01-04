@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, reca
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
+parser.add_argument('--lexicon', choices=['gold', 'joint'], default='gold')
 parser.add_argument('path', nargs='*')
 args = vars(parser.parse_args())
 
@@ -46,8 +47,9 @@ resources = {path: resource(path) for path in args['path']}
 
 lexicon = gold_lexicon
 
-for _, resource_lexicon in resources.values():
-    lexicon = lexicon & resource_lexicon
+if args['lexicon'] == 'joint':
+    for _, resource_lexicon in resources.values():
+        lexicon = lexicon & resource_lexicon
 
 results = [(path, scores(*tables(pairs))) for path, (pairs, _) in resources.items()]
 results = sorted(results, key=lambda item: item[1]['f1'], reverse=True)
