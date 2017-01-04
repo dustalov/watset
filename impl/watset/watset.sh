@@ -20,6 +20,8 @@ java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers
      -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt"
 
 for setup in cw-top cw-log cw-nolog mcl; do
+  sort --parallel=$(nproc) -s -o "$CWD/../watset-wsi-$setup.txt" "$CWD/../watset-wsi-$setup.txt"
+
   $CWD/disambiguate.py "$CWD/../watset-wsi-$setup.txt" >"$CWD/../watset-$setup-senses.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
