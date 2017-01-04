@@ -20,7 +20,7 @@ java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers
      -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt" | grep -i process
 
 for setup in cw-top cw-log cw-nolog mcl; do
-  sort --parallel=$(nproc) -s -o "$CWD/../watset-wsi-$setup.txt" "$CWD/../watset-wsi-$setup.txt"
+  sort --parallel=$(nproc) -so "$CWD/../watset-wsi-$setup.txt" "$CWD/../watset-wsi-$setup.txt"
 
   $CWD/disambiguate.py "$CWD/../watset-wsi-$setup.txt" >"$CWD/../watset-$setup-senses.txt"
 
@@ -30,7 +30,6 @@ for setup in cw-top cw-log cw-nolog mcl; do
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-top-clusters.txt" > "$CWD/../watset-$setup-cw-top-synsets.tsv"
   $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-top-synsets.tsv" > "$CWD/../watset-$setup-cw-top-pairs.txt"
-  sort --parallel=$(nproc) -uso "$CWD/../watset-$setup-cw-top-pairs.txt" "$CWD/../watset-$setup-cw-top-pairs.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
        de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_LOG \
@@ -38,7 +37,6 @@ for setup in cw-top cw-log cw-nolog mcl; do
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-log-clusters.txt" > "$CWD/../watset-$setup-cw-log-synsets.tsv"
   $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-log-synsets.tsv" > "$CWD/../watset-$setup-cw-log-pairs.txt"
-  sort --parallel=$(nproc) -uso "$CWD/../watset-$setup-cw-log-pairs.txt" "$CWD/../watset-$setup-cw-log-pairs.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
        de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_NOLOG \
@@ -46,5 +44,4 @@ for setup in cw-top cw-log cw-nolog mcl; do
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-nolog-clusters.txt" > "$CWD/../watset-$setup-cw-nolog-synsets.tsv"
   $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-nolog-synsets.tsv" > "$CWD/../watset-$setup-cw-nolog-pairs.txt"
-  sort --parallel=$(nproc) -uso "$CWD/../watset-$setup-cw-nolog-synsets.tsv" "$CWD/../watset-$setup-cw-nolog-synsets.tsv"
 done

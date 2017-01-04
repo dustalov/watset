@@ -28,12 +28,10 @@ ruthes:
 	@echo "# Assuming that you have RuThes in the directory data/ruthes-v2."
 	./ruthes.rb
 	../pairs.awk ruthes-synsets.tsv >ruthes-pairs.txt
-	sort -uso ruthes-pairs.txt ruthes-pairs.txt
 
 yarn: yarn-synsets.csv
 	./yarn-synsets.awk yarn-synsets.csv >yarn-synsets.tsv
 	../pairs.awk yarn-synsets.tsv >yarn-pairs.txt
-	sort -uso yarn-pairs.txt yarn-pairs.txt
 
 yarn-synsets.csv:
 	@echo "# Downloading the YARN synsets."

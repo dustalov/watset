@@ -13,4 +13,3 @@ rm -fv "$CWD/../maxmax-clusters.txt"
 # have no sense (check it yourself). There is no reason to
 # evaluate them due to the computational complexity.
 $CWD/../../pairs.awk -v N=300 "$CWD/../maxmax-synsets.tsv" > "$CWD/../maxmax-pairs.txt"
-sort --parallel=$(nproc) -uso "$CWD/../maxmax-synsets.tsv" "$CWD/../maxmax-synsets.tsv"
