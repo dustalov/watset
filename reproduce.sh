@@ -12,7 +12,8 @@ set -x
 make clean
 make data
 
-cp -fv data/edges.txt data/edges.count.txt
+mv -fv data/edges.txt data/edges.count.txt
+ln -sfTv edges.count.txt data/edges.txt
 make impl
 mkdir -p eval/count
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/count
@@ -21,7 +22,7 @@ eval/pairwise.py --gold=data/yarn-pairs.txt --lexicon=joint eval/count/*-pairs.t
 
 make -C impl clean
 sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
-cp -fv data/edges.ones.txt data/edges.txt
+ln -sfTv edges.ones.txt data/edges.txt
 make impl
 mkdir -p eval/ones
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ones
@@ -30,7 +31,7 @@ eval/pairwise.py --gold=data/yarn-pairs.txt --lexicon=joint eval/ones/*-pairs.tx
 
 make -C impl clean
 ./similarities.py ../projlearn/all.norm-sz500-w10-cb0-it3-min5.w2v <data/edges.count.txt >data/edges.w2v.txt
-cp -fv data/edges.w2v.txt data/edges.txt
+ln -sfTv edges.w2v.txt data/edges.txt
 make impl
 mkdir -p eval/sim
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/sim
