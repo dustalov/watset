@@ -15,7 +15,7 @@ make data
 cp -fv data/edges.txt data/edges.count.txt
 make impl
 mkdir -p eval/count
-cp -fv impl/*-pairs.txt eval/count
+cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/count
 eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-count.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-count.tsv | column -t
 
@@ -24,7 +24,7 @@ sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
 cp -fv data/edges.ones.txt data/edges.txt
 make impl
 mkdir -p eval/ones
-cp -fv impl/*-pairs.txt eval/ones
+cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ones
 eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
 
@@ -33,7 +33,7 @@ make -C impl clean
 cp -fv data/edges.w2v.txt data/edges.txt
 make impl
 mkdir -p eval/sim
-cp -fv impl/*-pairs.txt eval/sim
+cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/sim
 eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-sim.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-sim.tsv | column -t
 
