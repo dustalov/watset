@@ -18,7 +18,8 @@ eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-co
 eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-count.tsv | column -t
 
 make -C impl clean
-sed -re 's/[[:digit:]]+$/1/g' -i data/edges.txt
+sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
+cp -fv data/edges.ones.txt data/edges.txt
 make impl
 eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
