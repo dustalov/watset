@@ -30,13 +30,14 @@ ruthes:
 	sort -uso ruthes-pairs.txt ruthes-pairs.txt
 
 yarn: yarn-synsets.csv
-	./yarn-edges.awk yarn-synsets.csv >yarn-edges.txt
+	./yarn-pairs.awk yarn-synsets.csv >yarn-pairs.txt
 
 yarn-synsets.csv:
+	@echo "# Downloading the YARN synsets."
 	curl -sLO https://russianword.net/yarn-synsets.csv
 
 clean:
 	rm -fv wiktionary.tsv dict_ru_ru-0.3.7.oxt abramov.dat unldc.tsv
 	rm -fv edges.txt edges.csv
 	rm -fv ruthes-clusters.txt ruthes-pairs.txt ruthes-isas.txt
-	rm -fv yarn-synsets.csv yarn-edges.txt
+	rm -fv yarn-synsets.csv yarn-pairs.txt
