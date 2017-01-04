@@ -15,7 +15,11 @@ java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers
      de.tudarmstadt.lt.wsi.WSI -clustering cw -cwOption DIST_NOLOG -N 200 -n 200 -e 0 \
      -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-cw-nolog.txt"
 
-for setup in cw-top cw-log cw-nolog; do
+java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
+     de.tudarmstadt.lt.wsi.WSI -clustering mcl -N 200 -n 200 -e 0 \
+     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt"
+
+for setup in cw-top cw-log cw-nolog mcl; do
   $CWD/disambiguate.py "$CWD/../watset-wsi-$setup.txt" >"$CWD/../watset-$setup-senses.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
