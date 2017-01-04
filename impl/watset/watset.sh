@@ -29,16 +29,19 @@ for setup in cw-top cw-log cw-nolog mcl; do
        -in "$CWD/../watset-$setup-senses.txt" -out "$CWD/../watset-$setup-cw-top-clusters.txt"
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-top-clusters.txt" > "$CWD/../watset-$setup-cw-top-synsets.tsv"
+  $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-top-synsets.tsv" > "$CWD/../watset-$setup-cw-top-pairs.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
        de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_LOG \
        -in "$CWD/../watset-$setup-senses.txt" -out "$CWD/../watset-$setup-cw-log-clusters.txt"
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-log-clusters.txt" > "$CWD/../watset-$setup-cw-log-synsets.tsv"
+  $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-log-synsets.tsv" > "$CWD/../watset-$setup-cw-log-pairs.txt"
 
   java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
        de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_NOLOG \
        -in "$CWD/../watset-$setup-senses.txt" -out "$CWD/../watset-$setup-cw-nolog-clusters.txt"
 
   $CWD/../delabel.awk "$CWD/../watset-$setup-cw-nolog-clusters.txt" > "$CWD/../watset-$setup-cw-nolog-synsets.tsv"
+  $CWD/../../pairs.awk "$CWD/../watset-$setup-cw-nolog-synsets.tsv" > "$CWD/../watset-$setup-cw-nolog-pairs.txt"
 done
