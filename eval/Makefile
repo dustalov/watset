@@ -3,3 +3,4 @@ all:
 	./pairwise.py --gold=../data/yarn-pairs.txt ../impl/*-pairs.txt | column -t
 
 clean:
+	find -mindepth 1 -maxdepth 1 -type d -exec rm -rfv {} \;
