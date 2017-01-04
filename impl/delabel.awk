@@ -10,6 +10,6 @@ BEGIN {
         sep = ", ";
         len++;
     }
-    print $1, len, synset;
+    print $1, len, synset | "sort --parallel=$(nproc) -k2nr -k1n -s";
     synset = sep = len = ""; delete uniq;
 }

@@ -5,12 +5,21 @@ CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption TOP \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-top-synsets.txt"
+     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-top-clusters.txt"
+
+$CWD/../delabel.awk "$CWD/../cw-top-clusters.txt" > "$CWD/../cw-top-synsets.txt"
+rm -fv "$CWD/../cw-top-clusters.txt"
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_LOG \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-log-synsets.txt"
+     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-log-clusters.txt"
+
+$CWD/../delabel.awk "$CWD/../cw-log-clusters.txt" > "$CWD/../cw-log-synsets.txt"
+rm -fv "$CWD/../cw-log-clusters.txt"
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.cw.global.CWGlobal -N 200 -cwOption DIST_NOLOG \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-nolog-synsets.txt"
+     -in "$CWD/../../data/edges.txt" -out "$CWD/../cw-nolog-clusters.txt"
+
+$CWD/../delabel.awk "$CWD/../cw-nolog-clusters.txt" > "$CWD/../cw-nolog-synsets.txt"
+rm -fv "$CWD/../cw-nolog-clusters.txt"
