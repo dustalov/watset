@@ -1,5 +1,5 @@
 #!/usr/bin/awk -f
-# echo -e 'a\tb\na\tb\na\tc' | ./01-count.awk
+# echo -e 'a\tb\na\tb\na\tc' | ./count.awk
 BEGIN {
     FS = OFS = "\t";
 }
