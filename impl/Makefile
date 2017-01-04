@@ -6,4 +6,4 @@ all:
 	watset/watset.sh
 
 clean:
-	rm -fv *.txt
+	rm -fv *.txt *.tsv
