@@ -16,8 +16,8 @@ cp -fv data/edges.txt data/edges.count.txt
 make impl
 mkdir -p eval/count
 cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/count
-eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-count.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-count.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-count-ruthes.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-count-yarn.tsv | column -t
 
 make -C impl clean
 sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
@@ -25,8 +25,8 @@ cp -fv data/edges.ones.txt data/edges.txt
 make impl
 mkdir -p eval/ones
 cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ones
-eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-ones.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-ones-ruthes.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-ones-yarn.tsv | column -t
 
 make -C impl clean
 ./similarities.py ../projlearn/all.norm-sz500-w10-cb0-it3-min5.w2v <data/edges.count.txt >data/edges.w2v.txt
@@ -34,8 +34,8 @@ cp -fv data/edges.w2v.txt data/edges.txt
 make impl
 mkdir -p eval/sim
 cp -fv impl/*-pairs.txt impl/*-synsets.tsv eval/sim
-eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-sim.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-sim.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt impl/*-pairs.txt | tee pairwise-sim-ruthes.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt impl/*-pairs.txt | tee pairwise-sim-yarn.tsv | column -t
 
-eval/pairwise.py --gold=data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-all.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-all.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-all-ruthes.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-all-yarn.tsv | column -t
