@@ -27,17 +27,18 @@ ruthes:
 	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes."
 	@echo "# Assuming that you have RuThes in the directory data/ruthes-v2."
 	./ruthes.rb
+	../pairs.awk ruthes-synsets.tsv >ruthes-pairs.txt
 	sort -uso ruthes-pairs.txt ruthes-pairs.txt
 
 yarn: yarn-synsets.csv
-	./yarn-pairs.awk yarn-synsets.csv >yarn-pairs.txt
+	./yarn-synsets.awk yarn-synsets.csv >yarn-synsets.tsv
+	../pairs.awk yarn-synsets.tsv >yarn-pairs.txt
+	sort -uso yarn-pairs.txt yarn-pairs.txt
 
 yarn-synsets.csv:
 	@echo "# Downloading the YARN synsets."
 	curl -sLO https://russianword.net/yarn-synsets.csv
 
 clean:
-	rm -fv wiktionary.tsv dict_ru_ru-0.3.7.oxt abramov.dat unldc.tsv
-	rm -fv edges.txt edges.csv
-	rm -fv ruthes-clusters.txt ruthes-pairs.txt ruthes-isas.txt
-	rm -fv yarn-synsets.csv yarn-pairs.txt
+	rm -fv dict_ru_ru-0.3.7.oxt
+	rm -fv *.txt *.tsv *.csv *.dat

@@ -56,28 +56,12 @@ File.open(File.join(RUTHES, 'relations.xml')) do |f|
   end
 end
 
-File.open('ruthes-pairs.txt', 'w') do |pairs|
-File.open('ruthes-clusters.txt', 'w') do |clusters|
+File.open('ruthes-synsets.tsv', 'w') do |synsets|
   concepts.each do |id, concept|
-    synset = [concept]
-
-    synonyms[id].each do |synonym_id|
-      synset.push(entries[synonym_id])
-    end
-
-    synset.uniq!
-
-    synset.combination(2) do |word1, word2|
-      if word1 < word2
-        pairs.puts "%s\t%s" % [word1, word2]
-      else
-        pairs.puts "%s\t%s" % [word2, word1]
-      end
-    end
-
-    clusters.puts "%d\t%d\t%s" % [id, synset.length, synset.map { |w| w.gsub(/, /, ' ') }.join(', ')]
+    synset = Set.new([concept])
+    synonyms[id].each { |synonym_id| synset.add(entries[synonym_id]) }
+    synsets.puts "%d\t%d\t%s" % [id, synset.length, synset.map { |w| w.gsub(/, /, ' ') }.join(', ')]
   end
-end
 end
 
 File.open('ruthes-isas.txt', 'w') do |isas|
