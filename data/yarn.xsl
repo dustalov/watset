@@ -30,12 +30,10 @@
       </xsl:for-each>
       <xsl:text>,</xsl:text>
       <!-- words -->
-      <xsl:for-each select="yarn:word">
-        <xsl:if test="count(key('words', @ref)/yarn:word) &gt; 0">
-          <xsl:value-of select="key('words', @ref)/yarn:word"/>
-          <xsl:if test="position() &lt; last()">
-            <xsl:text>;</xsl:text>
-          </xsl:if>
+      <xsl:for-each select="yarn:word[count(key('words', @ref)/yarn:word) &gt; 0]">
+        <xsl:value-of select="key('words', @ref)/yarn:word"/>
+        <xsl:if test="position() &lt; last()">
+          <xsl:text>;</xsl:text>
         </xsl:if>
       </xsl:for-each>
       <xsl:text>&#10;</xsl:text>
