@@ -3,4 +3,5 @@ dict_ru_ru-*.oxt
 *.dat
 *.tsv
 *.txt
+*.xml
 *.csv

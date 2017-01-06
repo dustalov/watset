@@ -29,13 +29,14 @@ ruthes:
 	./ruthes.rb
 	../pairs.awk ruthes-synsets.tsv >ruthes-pairs.txt
 
-yarn: yarn-synsets.csv
-	./yarn-synsets.awk yarn-synsets.csv >yarn-synsets.tsv
+yarn: yarn.xml
+	xsltproc yarn.xsl yarn.xml >yarn-synsets.csv
+	./yarn-synsets.awk -v V=8 yarn-synsets.csv >yarn-synsets.tsv
 	../pairs.awk yarn-synsets.tsv >yarn-pairs.txt
 
-yarn-synsets.csv:
-	@echo "# Downloading the YARN synsets."
-	curl -sLO https://russianword.net/yarn-synsets.csv
+yarn.xml:
+	@echo "# Downloading the YARN dump."
+	curl -sLO https://russianword.net/yarn.xml
 
 clean:
 	rm -fv dict_ru_ru-0.3.7.oxt
