@@ -56,11 +56,15 @@ File.open(File.join(RUTHES, 'relations.xml')) do |f|
   end
 end
 
+def sanitize(word)
+  word.gsub(/, /, ' ').gsub(/ /, '_')
+end
+
 File.open('ruthes-synsets.tsv', 'w') do |synsets|
   concepts.each do |id, concept|
-    synset = Set.new([concept])
-    synonyms[id].each { |synonym_id| synset.add(entries[synonym_id]) }
-    synsets.puts "%d\t%d\t%s" % [id, synset.length, synset.map { |w| w.gsub(/, /, ' ').gsub(/ /, '_') }.join(', ')]
+    synset = Set.new([sanitize(concept)])
+    synonyms[id].each { |synonym_id| synset.add(sanitize(entries[synonym_id])) }
+    synsets.puts "%d\t%d\t%s" % [id, synset.length, synset.to_a.join(', ')]
   end
 end
 

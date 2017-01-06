@@ -1,7 +1,6 @@
 #!/usr/bin/awk -f
 BEGIN {
     FS  = "\t";
-    OFS = "";
 }
 TOLOWER {
     $3 = tolower($3);

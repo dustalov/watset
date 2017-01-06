@@ -19,8 +19,7 @@ NR > 1 && NR <= NX {
                 gsub(/(^ +| +$)/, "", $j);
                 gsub(/ /, "_", $i);
                 gsub(/ /, "_", $j);
-                print $i, $j;
-                print $j, $i;
+                if ($i != $j) print $i, $j ORS $j, $i;
             }
         }
     }

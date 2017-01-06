@@ -11,8 +11,7 @@ NF && $0!~/^#/ && $1~/.+/ {
             gsub(/(^ +| +$)/, "", words[j]);
             gsub(/ /, "_", words[i]);
             gsub(/ /, "_", words[j]);
-            print words[i], words[j];
-            print words[j], words[i];
+            if (words[i] != words[j]) print words[i], words[j] ORS words[j], words[i];
         }
     }
 }
