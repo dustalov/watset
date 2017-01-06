@@ -1,10 +1,12 @@
 #!/usr/bin/awk -f
 BEGIN {
-    FS = OFS = "\t";
+    FS  = "\t";
+    OFS = "";
+}
+TOLOWER {
+    $3 = tolower($3);
 }
 {
-    for (i = 1; i <= split($3, words, ", "); i++) {
-        if (TOLOWER) words[i] = tolower(words[i]);
-        print words[i] | "sort --parallel=$(nproc) -S1G -us";
-    }
+    gsub(/, /, ORS, $3);
+    print $3 | "sort --parallel=$(nproc) -S1G -us";
 }
