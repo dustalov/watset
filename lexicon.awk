@@ -4,7 +4,6 @@ BEGIN {
 }
 {
     for (i = 1; i <= split($3, words, ", "); i++) {
-        gsub("_", " ", words[i]);
-        print words[i] | "sort -us";
+        print words[i] | "sort --parallel=$(nproc) -S1G -us";
     }
 }
