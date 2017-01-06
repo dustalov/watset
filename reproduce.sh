@@ -38,8 +38,8 @@ mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/w2v
 eval/pairwise.py --gold=data/ruthes-pairs.txt --lexicon=joint eval/w2v/*-pairs.txt | tee pairwise-w2v-ruthes.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt --lexicon=joint eval/w2v/*-pairs.txt | tee pairwise-w2v-yarn.tsv | column -t
 
-eval/pairwise.py --gold=data/ruthes-pairs.txt --lexicon=joint eval/**/*-pairs.txt | tee pairwise-ruthes-joint.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt --lexicon=joint eval/**/*-pairs.txt | tee pairwise-yarn-joint.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt --lexicon=conjoint eval/**/*-pairs.txt | tee pairwise-ruthes-conjoint.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt --lexicon=conjoint eval/**/*-pairs.txt | tee pairwise-yarn-conjoint.tsv | column -t
 
 eval/pairwise.py --gold=data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-ruthes.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-yarn.tsv | column -t
