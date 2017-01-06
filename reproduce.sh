@@ -40,3 +40,6 @@ eval/pairwise.py --gold=data/yarn-pairs.txt eval/w2v/*-pairs.txt | tee pairwise-
 
 eval/pairwise.py --gold=data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-ruthes.tsv | column -t
 eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-yarn.tsv | column -t
+
+eval/cluster.sh data/ruthes-synsets.tsv eval/**/*-synsets.tsv | tee cluster-ruthes.tsv | column -t
+eval/cluster.sh data/yarn-synsets.tsv eval/**/*-synsets.tsv | tee cluster-yarn.tsv | column -t
