@@ -8,7 +8,7 @@ from multiprocessing import Pool, cpu_count
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
-parser.add_argument('--lexicon', choices=['gold', 'joint', 'conjoint'], default='gold')
+parser.add_argument('--lexicon', choices=['gold', 'joint', 'conjoint'], default='conjoint')
 parser.add_argument('path', nargs='*')
 args = vars(parser.parse_args())
 
