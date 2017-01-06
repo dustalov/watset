@@ -8,7 +8,8 @@ from multiprocessing import Pool, cpu_count
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
-parser.add_argument('--lexicon', choices=['gold', 'joint', 'conjoint'], default='conjoint')
+parser.add_argument('--lexicon', choices=('gold', 'joint', 'conjoint'), default='conjoint')
+parser.add_argument('--sorted', nargs='?', choices=('accuracy', 'roc_auc', 'precision', 'recall', 'f1'))
 parser.add_argument('path', nargs='*')
 args = vars(parser.parse_args())
 
@@ -63,7 +64,11 @@ with Pool(cpu_count()) as pool:
     for row in pool.imap_unordered(evaluate, resources.keys()):
         results.append(row)
 
-results = sorted(results, key=lambda item: item[1]['f1'], reverse=True)
+if args['sorted']:
+    results = sorted(results, key=lambda item: item[1][args['sorted']], reverse=True)
+else:
+    index = {path: i for i, (path, _) in enumerate(results)}
+    results = [results[index[path]] for path in args['path']]
 
 writer = csv.writer(sys.stdout, dialect='excel-tab', lineterminator='\n')
 writer.writerow(('path', 'accuracy', 'roc_auc', 'precision', 'recall', 'f1'))
