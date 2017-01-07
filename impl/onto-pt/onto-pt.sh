@@ -12,6 +12,8 @@ sort --parallel=$(nproc) -t $'\t' -k1n -o "$CWD/../onto-pt-components.txt"
 
 COMPONENTS=$(tail -1 "$CWD/../onto-pt-components.txt" | cut -f1)
 
+RUNS=30
+
 for i in $(seq $COMPONENTS); do
   # We do not want to reach the maximum files per directory limit.
   BLOCK="$DATA/$((i % 100))"
@@ -19,21 +21,18 @@ for i in $(seq $COMPONENTS); do
 
   # Seriously, there is no reason to expect anything useful
   # in the clusters with only a couple of elements.
-  if [ "$i" -gt "1000" ]; then
-    RUNS=1
-  elif [ "$i" -gt "100" ]; then
-    RUNS=2
-  elif [ "$i" -gt "50" ]; then
-    RUNS=15
+  if [ "$i" -le "300" ]; then
+    for j in $(seq $RUNS); do
+      $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-$j.txt"
+      $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" \
+        -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt" 2>/dev/null
+    done
   else
-    RUNS=30
+    $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-1.txt"
+    for j in $(seq $RUNS); do
+      $CWD/replicate.awk "$BLOCK/component-$i-$j.txt" > "$BLOCK/cluster-$i-$j.txt"
+    done
   fi
-
-  for j in $(seq $RUNS); do
-    $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-$j.txt"
-    $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" \
-      -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt" 2>/dev/null
-  done
 done
 
 find "$DATA" -name 'cluster-*-*.txt' -exec cat {} \; > "$CWD/../onto-pt-mcl.txt"
