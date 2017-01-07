@@ -9,6 +9,7 @@ from gensim.models.word2vec import Word2Vec
 import csv
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--sim', nargs='?', type=float, default=.3)
 parser.add_argument('w2v')
 args = vars(parser.parse_args())
 
@@ -24,6 +25,6 @@ for row in reader:
     try:
         similarity = w2v.similarity(word1, word2)
     except KeyError:
-        similarity = 0.
+        similarity = args['sim']
 
     print('%s\t%s\t%f' % (word1, word2, similarity))
