@@ -19,7 +19,9 @@ for i in $(seq $COMPONENTS); do
 
   # Seriously, there is no reason to expect anything useful
   # in the clusters with only a couple of elements.
-  if [ "$i" -gt "100" ]; then
+  if [ "$i" -gt "1000" ]; then
+    RUNS=1
+  elif [ "$i" -gt "100" ]; then
     RUNS=2
   elif [ "$i" -gt "50" ]; then
     RUNS=15
