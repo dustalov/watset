@@ -25,7 +25,8 @@ for i in $(seq $COMPONENTS); do
 
   for j in $(seq $RUNS); do
     $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-$j.txt"
-    $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt"
+    $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" \
+      -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt" 2>/dev/null
   done
 done
 
