@@ -34,18 +34,15 @@ comm -12 "$GOLD_DATA" "$RESOURCE_DATA" > $LEXICON
 # representing the synsets.
 
 $CWD/cnl.py "$LEXICON" < $GOLD > $GOLD_DATA
-FLOAT='([[:digit:]]+(|\.[[:digit:]]+))'
 
-echo -e "path\tnmi\tfnmi\tnmi_max\tnmi_sum\tnmi_lfk"
+echo -e "path\tsynsets\tgenconv_nmi\tovp_nmi"
 
 for RESOURCE in $@; do
   $CWD/cnl.py "$LEXICON" < $RESOURCE > $RESOURCE_DATA
 
-  GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi -f "$GOLD_DATA" "$RESOURCE_DATA" |
-               sed -re "s/^NMI: $FLOAT, FNMI: $FLOAT.*$/\1\t\3/g")
+  SYNSETS=$(wc -l "$RESOURCE" | cut -f1 -d' ')
+  GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi "$GOLD_DATA" "$RESOURCE_DATA")
+  OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi "$GOLD_DATA" "$RESOURCE_DATA")
 
-  OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi -a "$GOLD_DATA" "$RESOURCE_DATA" |
-           sed -re "s/^NMImax: $FLOAT, NMIsum: $FLOAT, NMIlfk: $FLOAT.*$/\1\t\3\t\5/g")
-
-  echo -e "$RESOURCE\t$GENCONVNMI\t$OVPNMI"
+  echo -e "$RESOURCE\t$SYNSETS\t$GENCONVNMI\t$OVPNMI"
 done
