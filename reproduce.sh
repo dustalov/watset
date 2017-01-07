@@ -32,11 +32,11 @@ make impl
 mkdir -p eval/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/w2v
 
-eval/pairwise.py --gold=data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-ruthes.tsv | column -t
-eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-yarn.tsv | column -t
+eval/pairwise.py --gold=data/ruthes-pairs.txt data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-ruthes.tsv | column -t
+eval/pairwise.py --gold=data/yarn-pairs.txt data/ruthes-pairs.txt eval/**/*-pairs.txt | tee pairwise-yarn.tsv | column -t
 
-eval/cluster.sh data/ruthes-synsets.tsv eval/**/*-synsets.tsv | tee cluster-ruthes.tsv | column -t
-eval/cluster.sh data/yarn-synsets.tsv eval/**/*-synsets.tsv | tee cluster-yarn.tsv | column -t
+eval/cluster.sh data/ruthes-synsets.tsv data/yarn-synsets.tsv eval/**/*-synsets.tsv | tee cluster-ruthes.tsv | column -t
+eval/cluster.sh data/yarn-synsets.tsv data/ruthes-synsets.tsv eval/**/*-synsets.tsv | tee cluster-yarn.tsv | column -t
 
 join --header -j 1 -t $'\t' >results-ruthes.tsv \
   <(sed -re 's/-pairs.txt\t/\t/g' pairwise-ruthes.tsv) \
