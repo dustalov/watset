@@ -37,3 +37,11 @@ eval/pairwise.py --gold=data/yarn-pairs.txt eval/**/*-pairs.txt | tee pairwise-y
 
 eval/cluster.sh data/ruthes-synsets.tsv eval/**/*-synsets.tsv | tee cluster-ruthes.tsv | column -t
 eval/cluster.sh data/yarn-synsets.tsv eval/**/*-synsets.tsv | tee cluster-yarn.tsv | column -t
+
+join --header -j 1 -t $'\t' >results-ruthes.tsv \
+  <(sed -re 's/-pairs.txt\t/\t/' pairwise-ruthes.tsv) \
+  <(sed -re 's/-synsets.tsv\t/\t/' cluster-ruthes.tsv)
+
+join --header -j 1 -t $'\t' >results-yarn.tsv \
+  <(sed -re 's/-pairs.txt\t/\t/' pairwise-yarn.tsv) \
+  <(sed -re 's/-synsets.tsv\t/\t/' cluster-yarn.tsv)
