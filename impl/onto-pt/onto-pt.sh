@@ -17,8 +17,12 @@ for i in $(seq $COMPONENTS); do
   BLOCK="$DATA/$((i % 100))"
   mkdir -p "$BLOCK"
 
+  # Seriously, there is no reason to expect anything useful
+  # in the clusters with only a couple of elements.
   if [ "$i" -gt "100" ]; then
-    RUNS=5
+    RUNS=2
+  elif [ "$i" -gt "50" ]; then
+    RUNS=15
   else
     RUNS=30
   fi
