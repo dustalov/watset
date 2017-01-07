@@ -39,9 +39,9 @@ eval/cluster.sh data/ruthes-synsets.tsv eval/**/*-synsets.tsv | tee cluster-ruth
 eval/cluster.sh data/yarn-synsets.tsv eval/**/*-synsets.tsv | tee cluster-yarn.tsv | column -t
 
 join --header -j 1 -t $'\t' >results-ruthes.tsv \
-  <(sed -re 's/-pairs.txt\t/\t/' pairwise-ruthes.tsv) \
-  <(sed -re 's/-synsets.tsv\t/\t/' cluster-ruthes.tsv)
+  <(sed -re 's/-pairs.txt\t/\t/g' pairwise-ruthes.tsv) \
+  <(sed -re 's/-synsets.tsv\t/\t/g' cluster-ruthes.tsv)
 
 join --header -j 1 -t $'\t' >results-yarn.tsv \
-  <(sed -re 's/-pairs.txt\t/\t/' pairwise-yarn.tsv) \
-  <(sed -re 's/-synsets.tsv\t/\t/' cluster-yarn.tsv)
+  <(sed -re 's/-pairs.txt\t/\t/g' pairwise-yarn.tsv) \
+  <(sed -re 's/-synsets.tsv\t/\t/g' cluster-yarn.tsv)
