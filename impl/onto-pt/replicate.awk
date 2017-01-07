@@ -1,14 +1,14 @@
 #!/usr/bin/awk -f
 BEGIN {
     FS = OFS = "\t";
-    ORS = "";
+    if (length(N) == 0) N = 1;
 }
 NR == 1 {
-    print $1, $2;
+    cluster = $1 OFS $2;
 }
 NR > 1 {
-    print OFS $1, $2;
+    cluster = cluster OFS $1 OFS $2;
 }
 END {
-    print RS;
+    for (i = 1; i <= N; i++) print cluster;
 }

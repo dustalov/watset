@@ -29,9 +29,7 @@ for i in $(seq $COMPONENTS); do
     done
   else
     $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-1.txt"
-    for j in $(seq $RUNS); do
-      $CWD/replicate.awk "$BLOCK/component-$i-$j.txt" > "$BLOCK/cluster-$i-$j.txt"
-    done
+    $CWD/replicate.awk -v N=$RUNS "$BLOCK/component-$i-1.txt" > "$BLOCK/cluster-$i-1.txt"
   fi
 done
 
