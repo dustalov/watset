@@ -18,7 +18,7 @@ def prob(word1, word2):
     return float(bigrams[word1][word2]) / (unigrams[word1] + unigrams[word2] - bigrams[word1][word2])
 
 for line in sys.stdin:
-    words = line.rstrip().split('\t')
+    words = list(set(line.rstrip().split('\t')))
 
     for i in range(len(words)):
         for j in range(i + 1, len(words)):

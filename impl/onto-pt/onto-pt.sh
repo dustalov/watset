@@ -40,5 +40,5 @@ find "$DATA" -name 'cluster-*-*.txt' -exec cat {} \; > "$CWD/../onto-pt-mcl.txt"
 
 $CWD/discover.py < "$CWD/../onto-pt-mcl.txt" > "$CWD/../onto-pt-clusters.txt"
 
-$CWD/cleanup.py | $CWD/../delabel.awk > "$CWD/../onto-pt-synsets.tsv"
+$CWD/cleanup.py < "$CWD/../onto-pt-clusters.txt" | $CWD/../delabel.awk > "$CWD/../onto-pt-synsets.tsv"
 $CWD/../../pairs.awk "$CWD/../onto-pt-synsets.tsv" > "$CWD/../onto-pt-pairs.txt"

@@ -11,18 +11,17 @@ import itertools
 clusters = {}
 index = defaultdict(lambda: set())
 
-with open('/home/dustalov/Work/watset/impl/onto-pt-clusters.txt') as f:
-    id = 0
+id = 0
 
-    for line in f:
-        words = set(line.rstrip().split('\t'))
+for line in sys.stdin:
+    words = set(line.rstrip().split('\t'))
 
-        clusters[id] = words
+    clusters[id] = words
 
-        for word in words:
-            index[word].add(id)
+    for word in words:
+        index[word].add(id)
 
-        id += 1
+    id += 1
 
 def match(id):
     words = clusters[id]
@@ -64,8 +63,5 @@ while queue:
                 del clusters[id]
                 break
 
-# for id, words in clusters.items():
 for id, words in enumerate(clusters.values()):
     print('\t'.join((str(id), str(len(words)), ', '.join(words))))
-
-# import IPython; IPython.embed()
