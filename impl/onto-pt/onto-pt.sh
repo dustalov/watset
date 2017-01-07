@@ -7,35 +7,17 @@ DATA=$(mktemp -d)
 
 trap 'rm -rf -- "$DATA"' INT TERM HUP EXIT
 
-$CWD/components.py < "$CWD/../../data/edges.txt" |
-sort --parallel=$(nproc) -t $'\t' -k1n -o "$CWD/../onto-pt-components.txt"
+for i in $(seq 30); do
+  awk 'BEGIN { FS = OFS = "\t"; } $1 <= $2 { print $1, $2, $3; } $1 > $2 { print $2, $1, $3; }' "$CWD/../../data/edges.txt" |
+  sort --parallel=$(nproc) -S1G -t $'\t' -su -k1,1 -k2,2 |
+  $CWD/noise.awk > "$DATA/edges-$i.txt"
 
-COMPONENTS=$(tail -1 "$CWD/../onto-pt-components.txt" | cut -f1)
-
-RUNS=30
-
-for i in $(seq $COMPONENTS); do
-  # We do not want to reach the maximum files per directory limit.
-  BLOCK="$DATA/$((i % 100))"
-  mkdir -p "$BLOCK"
-
-  # Seriously, there is no reason to expect anything useful
-  # in the clusters with only a couple of elements.
-  if [ "$i" -le "300" ]; then
-    for j in $(seq $RUNS); do
-      $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-$j.txt"
-      $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" \
-        -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt" 2>/dev/null
-    done
-  else
-    $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-1.txt"
-    $CWD/replicate.awk -v N=$RUNS "$BLOCK/component-$i-1.txt" > "$BLOCK/cluster-$i-1.txt"
-  fi
+  $CWD/../../../mcl-14-137/bin/mcl "$DATA/edges-$i.txt" \
+    -te $(nproc) -I 1.6 --abc -o "$DATA/clusters-$i.txt" 2>/dev/null
 done
 
-find "$DATA" -name 'cluster-*-*.txt' -exec cat {} \; > "$CWD/../onto-pt-mcl.txt"
+find "$DATA" -name 'clusters-*.txt' -exec cat {} \; > "$CWD/../onto-pt-mcl.txt"
 
-$CWD/discover.py < "$CWD/../onto-pt-mcl.txt" > "$CWD/../onto-pt-clusters.txt"
+$CWD/discover.py < "$CWD/../onto-pt-mcl.txt" | $CWD/../delabel.awk > "$CWD/../onto-pt-synsets.tsv"
 
-$CWD/cleanup.py < "$CWD/../onto-pt-clusters.txt" | $CWD/../delabel.awk > "$CWD/../onto-pt-synsets.tsv"
 $CWD/../../pairs.awk "$CWD/../onto-pt-synsets.tsv" > "$CWD/../onto-pt-pairs.txt"
