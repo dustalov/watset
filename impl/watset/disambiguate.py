@@ -3,6 +3,7 @@
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
+import argparse
 import csv
 import gc
 import sys
@@ -12,11 +13,15 @@ from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
 from multiprocessing import Pool, cpu_count
 
+parser = argparse.ArgumentParser()
+parser.add_argument('wsi')
+args = vars(parser.parse_args())
+
 wsi = defaultdict(lambda: dict())
 v   = DictVectorizer()
 D   = []
 
-with open(sys.argv[1]) as f:
+with open(args['wsi']) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
     for row in reader:
         word, sid, _, words = row

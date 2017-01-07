@@ -3,11 +3,16 @@
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
+import argparse
 import sys
 from gensim.models.word2vec import Word2Vec
 import csv
 
-w2v = Word2Vec.load_word2vec_format(sys.argv[1], binary=True, unicode_errors='ignore')
+parser = argparse.ArgumentParser()
+parser.add_argument('w2v')
+args = vars(parser.parse_args())
+
+w2v = Word2Vec.load_word2vec_format(args['w2v'], binary=True, unicode_errors='ignore')
 w2v.init_sims(replace=True)
 print('Using %d word2vec dimensions from "%s".' % (w2v.layer1_size, sys.argv[1]), file=sys.stderr)
 
