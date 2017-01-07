@@ -17,7 +17,13 @@ for i in $(seq $COMPONENTS); do
   BLOCK="$DATA/$((i % 100))"
   mkdir -p "$BLOCK"
 
-  for j in $(seq 30); do
+  if [ "$i" -gt "100" ]; then
+    RUNS=5
+  else
+    RUNS=30
+  fi
+
+  for j in $(seq $RUNS); do
     $CWD/component.awk -v C=$i "$CWD/../onto-pt-components.txt" > "$BLOCK/component-$i-$j.txt"
     $CWD/../../../mcl-14-137/bin/mcl "$BLOCK/component-$i-$j.txt" -te $(nproc) -I 1.6 --abc -o "$BLOCK/cluster-$i-$j.txt"
   done
