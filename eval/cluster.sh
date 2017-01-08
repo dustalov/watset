@@ -41,8 +41,8 @@ for RESOURCE in $@; do
   $CWD/cnl.py "$LEXICON" < $RESOURCE > $RESOURCE_DATA
 
   SYNSETS=$(wc -l "$RESOURCE" | cut -f1 -d' ')
-  GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi "$GOLD_DATA" "$RESOURCE_DATA")
-  OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi "$GOLD_DATA" "$RESOURCE_DATA")
+  GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
+  OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
 
   echo -e "$RESOURCE\t$SYNSETS\t$GENCONVNMI\t$OVPNMI"
 done
