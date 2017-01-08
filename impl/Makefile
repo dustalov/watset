@@ -1,6 +1,7 @@
 export LANG:=en_US.UTF-8
 
 all:
+	dummy/dummy.sh
 	cw/cw.sh
 	maxmax/maxmax.sh
 	onto-pt/onto-pt.sh
