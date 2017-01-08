@@ -8,7 +8,7 @@ from multiprocessing import Pool, cpu_count
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
-parser.add_argument('--lexicon', choices=('gold', 'joint', 'conjoint'), default='conjoint')
+parser.add_argument('--lexicon', choices=('gold', 'joint'), default='joint')
 parser.add_argument('--sorted', nargs='?', choices=('accuracy', 'precision', 'recall', 'f1'))
 parser.add_argument('path', nargs='*')
 args = vars(parser.parse_args())
@@ -55,8 +55,6 @@ with Pool(cpu_count()) as pool:
         resources[path] = (pairs, resource_lexicon)
 
 if args['lexicon'] == 'joint':
-    lexicon &= set.intersection(*(resource_lexicon for _, resource_lexicon in resources.values()))
-elif args['lexicon'] == 'conjoint':
     lexicon &= set.union(*(resource_lexicon for _, resource_lexicon in resources.values()))
 
 with Pool(cpu_count()) as pool:
