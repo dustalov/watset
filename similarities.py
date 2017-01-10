@@ -24,6 +24,9 @@ for row in reader:
 
     try:
         similarity = w2v.similarity(word1, word2)
+
+        if similarity < 0:
+            similarity = args['sim']
     except KeyError:
         similarity = args['sim']
 
