@@ -5,11 +5,7 @@ BEGIN {
 {
     gsub("(#[[:digit:]]+|, $)", "");
 
-    len = split($3, words, ", ");
-
-    if (len >= 10000) next;
-
-    for (i = 1; i <= len; i++) uniq[words[i]];
+    for (i = 1; i <= split($3, words, ", "); i++) uniq[words[i]];
 
     for (word in uniq) {
         synset = synset sep word;
