@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 set -o pipefail
-export LANG=en_US.UTF-8 LC_ALL=C
+export LANG=en_US.UTF-8 LC_COLLATE=C
 
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
