@@ -11,6 +11,8 @@ BEGIN {
 
     for (i = 1; i <= len; i++) uniq[words[i]];
 
+    len = 0;
+
     for (word in uniq) {
         synset = synset sep word;
         sep = ", ";
