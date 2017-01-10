@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8 LC_ALL=C
 
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

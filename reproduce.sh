@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-export LANG=en_US.utf8
+export LANG=en_US.UTF-8 LC_ALL=C
 
 cat <<EOF
 This script reproduces the results.
