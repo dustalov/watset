@@ -5,6 +5,7 @@ all:
 	dummy/dummy.sh
 	cw/cw.sh
 	maxmax/maxmax.sh
+	cpm/cpm.sh
 	onto-pt/onto-pt.sh
 	watset/watset.sh
 
