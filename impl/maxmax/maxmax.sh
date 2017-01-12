@@ -12,4 +12,4 @@ rm -fv "$CWD/../maxmax-clusters.txt"
 # Apparently, MaxMax tends to emit very large synsets that
 # have no sense (check it yourself). There is no reason to
 # evaluate them due to the computational complexity.
-$CWD/../../pairs.awk -v N=100 "$CWD/../maxmax-synsets.tsv" > "$CWD/../maxmax-pairs.txt"
+$CWD/../../pairs.awk "$CWD/../maxmax-synsets.tsv" > "$CWD/../maxmax-pairs.txt"
