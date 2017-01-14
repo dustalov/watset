@@ -25,14 +25,13 @@ graph: raw
 gold: ruthes yarn
 
 ruthes:
-	@gem list -i nokogiri >/dev/null 2>&1 || echo "# Please do 'gem install nokogiri' to work with RuThes."
-	@echo "# Assuming that you have RuThes in the directory data/ruthes-v2."
-	./ruthes.rb
+	@echo "# Assuming that you have RuThes in the directory ${CURDIR}/ruthes-v2."
+	./ruthes-stub.awk ruthes-v2/*.xml >ruthes.xml
+	xsltproc ruthes.xsl ruthes.xml | ./ruthes-synsets.awk >ruthes-synsets.tsv
 	../pairs.awk ruthes-synsets.tsv >ruthes-pairs.txt
 
 yarn: yarn.xml
-	xsltproc yarn.xsl yarn.xml >yarn-synsets.csv
-	./yarn-synsets.awk -v V=8 yarn-synsets.csv >yarn-synsets.tsv
+	xsltproc yarn.xsl yarn.xml | ./yarn-synsets.awk -v V=8 >yarn-synsets.tsv
 	../pairs.awk yarn-synsets.tsv >yarn-pairs.txt
 
 yarn.xml:
@@ -41,4 +40,4 @@ yarn.xml:
 
 clean:
 	rm -fv dict_ru_ru-0.3.7.oxt
-	rm -fv *.txt *.tsv *.csv *.dat
+	rm -fv *.txt *.tsv *.csv *.dat *.xml
