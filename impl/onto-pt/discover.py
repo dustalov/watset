@@ -8,7 +8,7 @@ import sys
 from collections import defaultdict, Counter
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--theta', nargs='?', type=float, default=.05)
+parser.add_argument('--theta', nargs='?', type=float, default=.2)
 args = vars(parser.parse_args())
 
 unigrams = defaultdict(lambda: 0)
