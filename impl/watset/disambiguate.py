@@ -18,7 +18,6 @@ parser.add_argument('wsi')
 args = vars(parser.parse_args())
 
 wsi = defaultdict(lambda: dict())
-v   = DictVectorizer()
 D   = []
 
 with open(args['wsi']) as f:
@@ -35,7 +34,7 @@ with open(args['wsi']) as f:
         wsi[word][int(sid)] = words
         D.append(words)
 
-X = v.fit_transform(D)
+v = DictVectorizer().fit(D)
 
 def emit(word):
     sneighbours = {}
