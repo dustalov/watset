@@ -26,7 +26,7 @@ with open(args['synsets']) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
     for row in reader:
-        synsets[int(row[0])] = [word.lower() for word in row[2].split(', ') if word]
+        synsets[int(row[0])] = [word for word in row[2].split(', ') if word]
 
         for word in synsets[int(row[0])]:
             index[word].add(int(row[0]))
