@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-export LANG=en_US.UTF-8 LC_COLLATE=C
+export LANG=en_US.UTF-8 LC_COLLATE=C LC_CTYPE=C
 
 cat <<EOF
 This script reproduces the results.

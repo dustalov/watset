@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-export LANG=en_US.UTF-8 LC_COLLATE=C
+export LANG=en_US.UTF-8 LC_COLLATE=C LC_CTYPE=C
 
 ./link.py --synsets=synsets.tsv --isas=pairs.txt >links.tsv
 ./join.py --synsets=synsets.tsv --links=links.tsv | sort -t $'\t' -k2nr -k4nr -k1n -o joint.tsv
