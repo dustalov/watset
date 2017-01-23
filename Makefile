@@ -3,10 +3,13 @@ export LC_COLLATE:=C
 
 .PHONY: data impl eval
 
-all: data impl eval
+all: impl eval
 
-data:
-	$(MAKE) -C data all
+data-ru:
+	$(MAKE) -C data ru
+
+data-en:
+	$(MAKE) -C data en
 
 impl:
 	$(MAKE) -C impl all

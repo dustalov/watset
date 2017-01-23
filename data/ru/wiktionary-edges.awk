@@ -1,8 +1,6 @@
 #!/usr/bin/awk -f
-# echo -e 'words\ncar;auto;ride' | ./00-extract.awk
 BEGIN {
-    FS  = "\t";
-    OFS = "\t";
+    FS = OFS = "\t";
 }
 ($2 != $3) && ($4 == "synonyms") {
     gsub(/<[^>]*>/, "");
@@ -19,5 +17,5 @@ BEGIN {
         gsub(/ /, "_", $i);
     }
 
-    if ($2 && $3) print $2, $3 ORS $3, $2;
+    if ($2 && $3 && $2 != $3) print $2, $3 ORS $3, $2;
 }
