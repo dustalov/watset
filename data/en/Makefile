@@ -15,14 +15,16 @@ graph: raw
 gold: wordnet twsi
 
 wordnet: wordnet-synsets.csv
-	./csv-edges.awk wordnet-synsets.csv >wordnet-pairs.txt
+	./csv-synsets.awk wordnet-synsets.csv >wordnet-synsets.tsv
+	../../pairs.awk wordnet-synsets.tsv >wordnet-pairs.txt
 
 wordnet-synsets.csv:
 	@echo "# Downloading the processed WordNet."	
 	curl -sLO http://panchenko.me/data/joint/watset/wordnet-synsets.csv
 
 twsi: twsi-synsets.csv
-	./csv-edges.awk twsi-synsets.csv >twsi-pairs.txt
+	./csv-synsets.awk twsi-synsets.csv >twsi-synsets.tsv
+	../../pairs.awk twsi-synsets.tsv >twsi-pairs.txt
 
 twsi-synsets.csv:
 	@echo "# Downloading the processed TWSI."
