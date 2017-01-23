@@ -9,9 +9,11 @@ EOF
 echo
 set -x
 
-make clean
+rm -rfv eval/ru
+
 make data-ru
 
+make -C impl clean
 mv -fv data/edges.txt data/edges.count.txt
 ln -sfTv edges.count.txt data/edges.txt
 make impl
