@@ -100,12 +100,8 @@ def emit(id):
 
     return (id, hsenses)
 
-i = 0
-
 with Pool(cpu_count()) as pool:
-    for id, hsenses in pool.imap_unordered(emit, synsets):
-        i += 1
-
+    for i, (id, hsenses) in enumerate(pool.imap_unordered(emit, synsets)):
         senses = [(word, index[word][id]) for word in synsets[id]]
         senses_str = ', '.join(('%s#%d' % sense for sense in senses))
 
@@ -114,8 +110,8 @@ with Pool(cpu_count()) as pool:
 
         print('\t'.join((str(id), str(len(synsets[id])), senses_str, str(len(isas)), isas_str)))
 
-        if i % 1000 == 0:
-            print('%d entries out of %d done.' % (i, len(hctx)), file=sys.stderr, flush=True)
+        if (i + 1) % 1000 == 0:
+            print('%d entries out of %d done.' % (i + 1, len(synsets)), file=sys.stderr, flush=True)
 
-if len(hctx) % 1000 != 0:
-    print('%d entries out of %d done.' % (len(hctx), len(hctx)), file=sys.stderr, flush=True)
+if len(synsets) % 1000 != 0:
+    print('%d entries out of %d done.' % (len(hctx), len(synsets)), file=sys.stderr, flush=True)
