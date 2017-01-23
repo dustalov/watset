@@ -20,7 +20,7 @@ parser.add_argument('--isas', required=True)
 parser.add_argument('-k', nargs='?', type=int, default=6)
 args = vars(parser.parse_args())
 
-synsets, index, lexicon = {}, defaultdict(lambda: set()), set()
+synsets, index, lexicon = {}, defaultdict(lambda: list()), set()
 
 with open(args['synsets']) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
@@ -29,9 +29,11 @@ with open(args['synsets']) as f:
         synsets[int(row[0])] = [word for word in row[2].split(', ') if word]
 
         for word in synsets[int(row[0])]:
-            index[word].add(int(row[0]))
+            index[word].append(int(row[0]))
 
         lexicon.update(synsets[int(row[0])])
+
+index = {word: {id: i + 1 for i, id in enumerate(ids)} for word, ids in index.items()}
 
 isas = defaultdict(lambda: set())
 
@@ -75,6 +77,9 @@ for id, words in synsets.items():
 v = DictVectorizer().fit(hctx.values())
 
 def emit(id):
+    if not id in hctx:
+        return (id, {})
+
     hypernyms, vector, hsenses = hctx[id], v.transform(hctx[id]), {}
 
     for hypernym in hypernyms:
@@ -98,10 +103,16 @@ def emit(id):
 i = 0
 
 with Pool(cpu_count()) as pool:
-    for id, hsenses in pool.imap_unordered(emit, hctx):
+    for id, hsenses in pool.imap_unordered(emit, synsets):
         i += 1
 
-        print('%d\t%s' % (id, ', '.join(('%s#%d' % e for e in hsenses.items()))))
+        senses = [(word, index[word][id]) for word in synsets[id]]
+        senses_str = ', '.join(('%s#%d' % sense for sense in senses))
+
+        isas = [(word, index[word][hid]) for word, hid in hsenses.items()]
+        isas_str = ', '.join(('%s#%d' % sense for sense in isas))
+
+        print('\t'.join((str(id), str(len(synsets[id])), senses_str, str(len(isas)), isas_str)))
 
         if i % 1000 == 0:
             print('%d entries out of %d done.' % (i, len(hctx)), file=sys.stderr, flush=True)
