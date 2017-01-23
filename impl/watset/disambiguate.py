@@ -60,18 +60,14 @@ def emit(word):
 
     return sneighbours
 
-i = 0
-
 with Pool(cpu_count()) as pool:
-    for sneighbours in pool.imap_unordered(emit, wsi):
-        i += 1
-
+    for i, sneighbours in enumerate(pool.imap_unordered(emit, wsi)):
         for sense, neighbours in sneighbours.items():
             for nsense, weight in neighbours.items():
                 print('%s\t%s\t%f' % (sense, nsense, weight))
 
-        if i % 1000 == 0:
-            print('%d entries out of %d done.' % (i, len(wsi)), file=sys.stderr)
+        if (i + 1) % 1000 == 0:
+            print('%d entries out of %d done.' % (i + 1, len(wsi)), file=sys.stderr)
 
 if len(wsi) % 1000 != 0:
     print('%d entries out of %d done.' % (len(wsi), len(wsi)), file=sys.stderr)
