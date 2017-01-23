@@ -12,7 +12,21 @@ graph: raw
 	@echo "# Generating the word graph."
 	./edges.sh
 
-gold:
+gold: wordnet twsi
+
+wordnet: wordnet-synsets.csv
+	./csv-edges.awk wordnet-synsets.csv >wordnet-pairs.txt
+
+wordnet-synsets.csv:
+	@echo "# Downloading the processed WordNet."	
+	curl -sLO http://panchenko.me/data/joint/watset/wordnet-synsets.csv
+
+twsi: twsi-synsets.csv
+	./csv-edges.awk twsi-synsets.csv >twsi-pairs.txt
+
+twsi-synsets.csv:
+	@echo "# Downloading the processed TWSI."
+	curl -sLO http://panchenko.me/data/joint/watset/twsi-synsets.csv
 
 clean:
-	rm -fv *.txt *.tsv
+	rm -fv *.txt *.tsv *.csv
