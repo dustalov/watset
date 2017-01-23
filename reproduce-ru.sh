@@ -10,7 +10,7 @@ echo
 set -x
 
 make clean
-make data
+make data-ru
 
 mv -fv data/edges.txt data/edges.count.txt
 ln -sfTv edges.count.txt data/edges.txt
