@@ -1,6 +1,5 @@
 export LANG:=en_US.UTF-8
 export LC_COLLATE:=C
-export LC_CTYPE:=C
 
 .PHONY: ru en
 
