@@ -6,7 +6,7 @@ all:
 	cw/cw.sh
 	maxmax/maxmax.sh
 	cpm/cpm.sh
-	onto-pt/onto-pt.sh
+	eco/eco.sh
 	watset/watset.sh
 
 clean:

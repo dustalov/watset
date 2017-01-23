@@ -17,8 +17,8 @@ for i in $(seq 30); do
     -te $(nproc) -I 1.6 --abc -o "$DATA/clusters-$i.txt" 2>/dev/null
 done
 
-find "$DATA" -name 'clusters-*.txt' -exec cat {} \; > "$CWD/../onto-pt-mcl.txt"
+find "$DATA" -name 'clusters-*.txt' -exec cat {} \; > "$CWD/../eco-mcl.txt"
 
-$CWD/discover.py < "$CWD/../onto-pt-mcl.txt" | $CWD/../delabel.awk > "$CWD/../onto-pt-synsets.tsv"
+$CWD/discover.py < "$CWD/../eco-mcl.txt" | $CWD/../delabel.awk > "$CWD/../eco-synsets.tsv"
 
-$CWD/../../pairs.awk "$CWD/../onto-pt-synsets.tsv" > "$CWD/../onto-pt-pairs.txt"
+$CWD/../../pairs.awk "$CWD/../eco-synsets.tsv" > "$CWD/../eco-pairs.txt"
