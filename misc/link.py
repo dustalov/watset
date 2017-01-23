@@ -114,4 +114,4 @@ with Pool(cpu_count()) as pool:
             print('%d entries out of %d done.' % (i + 1, len(synsets)), file=sys.stderr, flush=True)
 
 if len(synsets) % 1000 != 0:
-    print('%d entries out of %d done.' % (len(hctx), len(synsets)), file=sys.stderr, flush=True)
+    print('%d entries out of %d done.' % (len(synsets), len(synsets)), file=sys.stderr, flush=True)
