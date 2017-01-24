@@ -36,11 +36,11 @@ rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/ru/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/w2v
 
-eval/ru/pairwise.py --gold=data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-ruthes.tsv | sort -t $'\t' -g -k6r | column -t
-eval/ru/pairwise.py --gold=data/ru/yarn-pairs.txt data/ru/ruthes-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k6r | column -t
+eval/pairwise.py --gold=data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-ruthes.tsv | sort -t $'\t' -g -k6r | column -t
+eval/pairwise.py --gold=data/ru/yarn-pairs.txt data/ru/ruthes-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k6r | column -t
 
-eval/ru/cluster.sh data/ru/ruthes-synsets.tsv data/ru/yarn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-ruthes.tsv | column -t
-eval/ru/cluster.sh data/ru/yarn-synsets.tsv data/ru/ruthes-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
+eval/cluster.sh data/ru/ruthes-synsets.tsv data/ru/yarn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-ruthes.tsv | column -t
+eval/cluster.sh data/ru/yarn-synsets.tsv data/ru/ruthes-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
 
 join --header -j 1 -t $'\t' >results-ru-ruthes.tsv \
   <(sed -re 's/-pairs.txt\t/\t/g' pairwise-ru-ruthes.tsv) \
