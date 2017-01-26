@@ -48,6 +48,6 @@ for setup in cw-top cw-log cw-nolog mcl; do
   $CWD/../../../mcl-14-137/bin/mcl "$CWD/../watset-$setup-senses.txt" \
     -te $(nproc) --abc -o "$CWD/../watset-$setup-mcl-clusters.txt" 2>/dev/null
 
-  $CWD/format.awk "$CWD/../watset-$setup-mcl-clusters.txt" | $CWD/../delabel.awk > "$CWD/../watset-$setup-mcl-synsets.tsv"
+  $CWD/../mcl/format.awk "$CWD/../watset-$setup-mcl-clusters.txt" | $CWD/../delabel.awk > "$CWD/../watset-$setup-mcl-synsets.tsv"
   $CWD/../../pairs.awk "$CWD/../watset-$setup-mcl-synsets.tsv" > "$CWD/../watset-$setup-mcl-pairs.txt"
 done
