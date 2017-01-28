@@ -57,6 +57,8 @@ def emit(word):
             if cosine > 0:
                 nsense = '%s#%d' % (neighbour, nsid)
                 sneighbours[sense][nsense] = weight
+            else:
+                print('Dropping: "%s" -> "%s".' % (word, neighbour), file=sys.stderr)
 
     return sneighbours
 
