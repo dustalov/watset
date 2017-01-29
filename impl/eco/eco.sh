@@ -8,7 +8,7 @@ DATA=$(mktemp -d)
 trap 'rm -rf -- "$DATA"' INT TERM HUP EXIT
 
 awk 'BEGIN { FS = OFS = "\t"; } $1 <= $2 { print $1, $2, $3; } $1 > $2 { print $2, $1, $3; }' "$CWD/../../data/edges.txt" |
-sort --parallel=$(nproc) -S1G -t $'\t' -su -k1 -k2 -o "$DATA/edges.txt"
+sort --parallel=$(nproc) -S1G -t $'\t' -u -k1 -k2 -o "$DATA/edges.txt"
 
 rm -fv "$CWD/../eco-mcl.txt.xz"
 

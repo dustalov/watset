@@ -11,7 +11,7 @@ BEGIN {
     for (i = 1; i <= len - 1; i++) {
         for (j = i + 1; j <= len; j++) {
             if (words[i] != words[j]) {
-                print words[i], words[j] ORS words[j], words[i] | "sort --parallel=$(nproc) -t \"\t\" -S1G -k1 -k2 -s";
+                print words[i], words[j] ORS words[j], words[i] | "sort --parallel=$(nproc) -t \"\t\" -S1G -k1 -k2";
             }
         }
     }

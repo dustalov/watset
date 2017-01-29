@@ -19,7 +19,7 @@ BEGIN {
         len++;
     }
 
-    print $1, len, synset | "sort --parallel=$(nproc) -t \"\t\" -S1G -k2nr -k1n -s";
+    print $1, len, synset | "sort --parallel=$(nproc) -t \"\t\" -S1G -k2nr -k1n";
 
     synset = sep = len = ""; delete uniq;
 }

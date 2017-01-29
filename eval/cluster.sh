@@ -26,7 +26,7 @@ for RESOURCE in $@; do
   $CWD/../lexicon.awk -v TOLOWER=1 "$RESOURCE" >> $RESOURCE_DATA
 done
 
-sort --parallel=$(nproc) -S1G -suo "$RESOURCE_DATA" "$RESOURCE_DATA"
+sort --parallel=$(nproc) -S1G -uo "$RESOURCE_DATA" "$RESOURCE_DATA"
 
 comm -12 "$GOLD_DATA" "$RESOURCE_DATA" > $LEXICON
 
