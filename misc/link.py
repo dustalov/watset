@@ -97,6 +97,7 @@ def emit(id):
             hsenses[(hypernym, hid)] = cosine
 
     hsenses = dict(dict(sorted(hsenses.items(), key=itemgetter(1), reverse=True)[:args['k']]).keys())
+    hsenses = {hypernym: hid for hypernym, hid in hsenses.items() if hypernym not in synsets[id]}
 
     return (id, hsenses)
 
