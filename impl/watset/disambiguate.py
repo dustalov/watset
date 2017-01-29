@@ -52,13 +52,18 @@ def emit(word):
         for neighbour, weight in words.items():
             neighbours   = wsi[neighbour]
             candidates   = {nsid: sim(vector, v.transform(neighbours[nsid])).item(0) for nsid in neighbours}
+
+            if not candidates:
+                print('Missing candidates for "%s": "%s".' % (word, neighbour), file=sys.stderr)
+                continue
+
             nsid, cosine = max(candidates.items(), key=itemgetter(1))
 
             if cosine > 0:
                 nsense = '%s#%d' % (neighbour, nsid)
                 sneighbours[sense][nsense] = weight
             else:
-                print('Dropping: "%s" -> "%s".' % (word, neighbour), file=sys.stderr)
+                print('Can not estimate the sense for "%s": "%s".' % (word, neighbour), file=sys.stderr)
 
     return sneighbours
 
