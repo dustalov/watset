@@ -20,24 +20,6 @@
           <xsl:with-param name="to"   select="@from"/>
         </xsl:call-template>
       </xsl:if>
-      <!--
-      <xsl:if test="@name = &quot;ВЫШЕ&quot;">
-        <xsl:value-of select="@from"/>
-        <xsl:text>&#9;</xsl:text>
-        <xsl:text>is-a</xsl:text>
-        <xsl:text>&#9;</xsl:text>
-        <xsl:value-of select="@to"/>
-        <xsl:text>&#10;</xsl:text>
-      </xsl:if>
-      <xsl:if test="@name = &quot;НИЖЕ&quot;">
-        <xsl:value-of select="@to"/>
-        <xsl:text>&#9;</xsl:text>
-        <xsl:text>is-a</xsl:text>
-        <xsl:text>&#9;</xsl:text>
-        <xsl:value-of select="@from"/>
-        <xsl:text>&#10;</xsl:text>
-      </xsl:if>
-      -->
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="relations">
