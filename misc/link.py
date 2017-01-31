@@ -12,7 +12,7 @@ from math import log
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
-from multiprocessing import Pool, cpu_count
+import concurrent.futures
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--synsets', required=True)
@@ -101,8 +101,12 @@ def emit(id):
 
     return (id, hsenses)
 
-with Pool(cpu_count()) as pool:
-    for i, (id, hsenses) in enumerate(pool.imap_unordered(emit, synsets)):
+with concurrent.futures.ProcessPoolExecutor() as executor:
+    futures = (executor.submit(emit, id) for id in synsets)
+
+    for i, future in enumerate(concurrent.futures.as_completed(futures)):
+        id, hsenses = future.result()
+
         senses = [(word, index[word][id]) for word in synsets[id]]
         senses_str = ', '.join(('%s#%d' % sense for sense in senses))
 
