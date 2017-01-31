@@ -17,6 +17,7 @@ import concurrent.futures
 parser = argparse.ArgumentParser()
 parser.add_argument('--synsets', required=True)
 parser.add_argument('--isas', required=True)
+parser.add_argument('--weight', choices=('tf', 'tfidf'), default='tfidf')
 parser.add_argument('-k', nargs='?', type=int, default=6)
 args = vars(parser.parse_args())
 
@@ -64,6 +65,8 @@ def tf(w, words):
 def tfidf(w, words):
     return tf(w, words) * idf.get(w, 1.)
 
+weight = tf if args['weight'] == 'tf' else tfidf
+
 hctx = {}
 
 for id, words in synsets.items():
@@ -72,7 +75,7 @@ for id, words in synsets.items():
     if not hypernyms:
         continue
 
-    hctx[id] = {word: tfidf(word, hypernyms) for word in hypernyms}
+    hctx[id] = {word: weight(word, hypernyms) for word in hypernyms}
 
 v = DictVectorizer().fit(hctx.values())
 
@@ -88,7 +91,7 @@ def emit(id):
         if not candidates:
             continue
 
-        candidates = {hid: {word: tfidf(word, words) for word in words} for hid, words in candidates.items()}
+        candidates = {hid: {word: weight(word, words) for word in words} for hid, words in candidates.items()}
         candidates = {hid: sim(vector, v.transform(words)) for hid, words in candidates.items()}
 
         hid, cosine = max(candidates.items(), key=itemgetter(1))
