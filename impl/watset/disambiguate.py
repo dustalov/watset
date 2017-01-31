@@ -11,7 +11,7 @@ from collections import defaultdict
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
-from multiprocessing import Pool, cpu_count
+import concurrent.futures
 
 parser = argparse.ArgumentParser()
 parser.add_argument('wsi')
@@ -67,8 +67,10 @@ def emit(word):
 
     return sneighbours
 
-with Pool(cpu_count()) as pool:
-    for i, sneighbours in enumerate(pool.imap_unordered(emit, wsi)):
+with concurrent.futures.ProcessPoolExecutor() as executor:
+    futures = (executor.submit(emit, word) for word in wsi)
+
+    for i, sneighbours in enumerate(concurrent.futures.as_completed(futures)):
         for sense, neighbours in sneighbours.items():
             for nsense, weight in neighbours.items():
                 print('%s\t%s\t%f' % (sense, nsense, weight))
