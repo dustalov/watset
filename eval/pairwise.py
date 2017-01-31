@@ -2,19 +2,17 @@
 
 import argparse
 import csv
-import sys
+from concurrent.futures import ProcessPoolExecutor
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from multiprocessing import Pool, cpu_count
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
 parser.add_argument('--lexicon', choices=('gold', 'joint'), default='joint')
-parser.add_argument('--sorted', nargs='?', choices=('accuracy', 'precision', 'recall', 'f1'))
-parser.add_argument('path', nargs='*')
+parser.add_argument('path', nargs='+')
 args = vars(parser.parse_args())
 
-def resource(path):
-    pairs, lexicon = set(), set()
+def synonyms(path):
+    pairs = set()
 
     with open(path) as f:
         reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
@@ -23,14 +21,22 @@ def resource(path):
             word1, word2 = sorted((row[0].lower(), row[1].lower()))
 
             pairs.add((word1, word2))
-            lexicon.add(word1)
-            lexicon.add(word2)
 
-    return (path, pairs, lexicon)
+    return pairs
 
-def evaluate(path):
-    pairs, _ = resources[path]
-    return (path, len(pairs), scores(*tables(pairs)))
+def words(pairs):
+    return {w for w, _ in pairs} | {w for _, w in pairs}
+
+with ProcessPoolExecutor() as executor:
+    paths     = args['path'] + [args['gold']]
+    resources = {path: pairs for path, pairs in zip(paths, executor.map(synonyms, paths))}
+
+gold = resources.pop(args['gold'])
+
+lexicon = words(gold)
+
+if args['lexicon'] == 'joint':
+    lexicon &= set.union(*(words(pairs) for pairs in resources.values()))
 
 def tables(pairs):
     union = [pair for pair in (pairs | gold) if pair[0] in lexicon and pair[1] in lexicon]
@@ -46,36 +52,21 @@ def scores(true, pred):
         'f1':        f1_score(true, pred)
     }
 
-_, gold, lexicon = resource(args['gold'])
+def evaluate(path):
+    return scores(*tables(resources[path]))
 
-resources, results = {}, []
+with ProcessPoolExecutor() as executor:
+    results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
-with Pool(cpu_count()) as pool:
-    for path, pairs, resource_lexicon in pool.imap_unordered(resource, args['path']):
-        resources[path] = (pairs, resource_lexicon)
+print('\t'.join(('path', 'pairs', 'accuracy', 'precision', 'recall', 'f1')))
 
-if args['lexicon'] == 'joint':
-    lexicon &= set.union(*(resource_lexicon for _, resource_lexicon in resources.values()))
-
-with Pool(cpu_count()) as pool:
-    for row in pool.imap_unordered(evaluate, resources.keys()):
-        results.append(row)
-
-if args['sorted']:
-    results = sorted(results, key=lambda item: item[2][args['sorted']], reverse=True)
-else:
-    index = {path: i for i, (path, _, _) in enumerate(results)}
-    results = [results[index[path]] for path in args['path']]
-
-writer = csv.writer(sys.stdout, dialect='excel-tab', lineterminator='\n')
-writer.writerow(('path', 'pairs', 'accuracy', 'precision', 'recall', 'f1'))
-
-for path, pairs, values in results:
-    writer.writerow((
+for path, values in results.items():
+    pairs = resources[path]
+    print('\t'.join((
         path,
-        pairs,
-        values['accuracy'],
-        values['precision'],
-        values['recall'],
-        values['f1']
-    ))
+        str(len(pairs)),
+        str(values['accuracy']),
+        str(values['precision']),
+        str(values['recall']),
+        str(values['f1'])
+    )))
