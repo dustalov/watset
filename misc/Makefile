@@ -23,6 +23,4 @@ ruthes:
 
 clean:
 	rm -fv ru-librusec-wiki-diff.csv.gz
-	rm -fv *-isas.txt
-
-# ./expand.py --w2v=all.norm-sz500-w10-cb0-it3-min5.w2v --kmeans=sz500-k20-l1.0/kmeans.pickle --path=sz500-k20-l1.0 --model=regularized_synonym patterns-isas.txt >patterns-exp-isas.txt
+	rm -fv *-isas.txt *-linked.tsv
