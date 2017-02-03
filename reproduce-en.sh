@@ -36,16 +36,8 @@ rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/en/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/en/w2v
 
-eval/pairwise.py --gold=data/en/wordnet-pairs.txt data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-wordnet.tsv | sort -t $'\t' -g -k6r | column -t
-eval/pairwise.py --gold=data/en/twsi-pairs.txt data/en/wordnet-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-twsi.tsv | sort -t $'\t' -g -k6r | column -t
+eval/pairwise.py --gold=data/en/wordnet-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-wordnet.tsv | sort -t $'\t' -g -k6r | column -t
+eval/pairwise.py --gold=data/en/wordnet-pairs.txt data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-wordnet-twsi.tsv | sort -t $'\t' -g -k6r | column -t
 
-eval/cluster.sh data/en/wordnet-synsets.tsv data/en/twsi-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-wordnet.tsv | column -t
-eval/cluster.sh data/en/twsi-synsets.tsv data/en/wordnet-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-twsi.tsv | column -t
-
-join --header -j 1 -t $'\t' >results-en-wordnet.tsv \
-  <(sed -re 's/-pairs.txt\t/\t/g' pairwise-en-wordnet.tsv) \
-  <(sed -re 's/-synsets.tsv\t/\t/g' cluster-en-wordnet.tsv)
-
-join --header -j 1 -t $'\t' >results-en-twsi.tsv \
-  <(sed -re 's/-pairs.txt\t/\t/g' pairwise-en-twsi.tsv) \
-  <(sed -re 's/-synsets.tsv\t/\t/g' cluster-en-twsi.tsv)
+eval/pairwise.py --gold=../babelnet-extract/pairs.en.txt eval/en/**/*-pairs.txt | tee pairwise-en-babelnet.tsv | sort -t $'\t' -g -k6r | column -t
+eval/pairwise.py --gold=../babelnet-extract/pairs.en.txt data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-babelnet-twsi.tsv | sort -t $'\t' -g -k6r | column -t
