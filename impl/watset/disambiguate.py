@@ -70,7 +70,9 @@ def emit(word):
 with concurrent.futures.ProcessPoolExecutor() as executor:
     futures = (executor.submit(emit, word) for word in wsi)
 
-    for i, sneighbours in enumerate(concurrent.futures.as_completed(futures)):
+    for i, future in enumerate(concurrent.futures.as_completed(futures)):
+        sneighbours = future.result()
+
         for sense, neighbours in sneighbours.items():
             for nsense, weight in neighbours.items():
                 print('%s\t%s\t%f' % (sense, nsense, weight))
