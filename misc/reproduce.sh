@@ -1,10 +1,6 @@
 #!/bin/bash -ex
 export LANG=en_US.UTF-8 LC_COLLATE=C
 
-rm -fv *-exp-isas.txt
-
-./expand.sh {patterns,wiktionary,mas}-isas.txt
-
 for WEIGHT in tf idf tfidf; do
 for SYNSETS in *-synsets.tsv; do
 for PAIRS in patterns-isas.txt; do

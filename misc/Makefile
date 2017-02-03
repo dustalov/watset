@@ -3,6 +3,9 @@ export LC_COLLATE:=C
 
 all: patterns wiktionary mas ruthes
 
+expand:
+	./expand.sh {patterns,wiktionary,mas}-isas.txt
+
 patterns: ru-librusec-wiki-diff.csv.gz
 	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3nr >patterns-isas.txt
 
