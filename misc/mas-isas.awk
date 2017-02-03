@@ -6,5 +6,6 @@ BEGIN {
 /^\t/ {
     gsub(/(^\t| \{.*|')/, "");
     gsub(/ - /, OFS);
+    gsub(/ /, "_");
     print $0;
 }

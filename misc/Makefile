@@ -7,7 +7,7 @@ expand:
 	./expand.sh {patterns,wiktionary,mas}-isas.txt
 
 patterns: ru-librusec-wiki-diff.csv.gz
-	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3nr >patterns-isas.txt
+	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | tr ' ' '_' | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3nr >patterns-isas.txt
 
 ru-librusec-wiki-diff.csv.gz:
 	curl -sLO 'http://panchenko.me/data/joint/isas/ru-librusec-wiki-diff.csv.gz'
