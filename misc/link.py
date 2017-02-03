@@ -47,9 +47,8 @@ isas = defaultdict(lambda: set())
 with open(args['isas']) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
-    # not unpacking for skipping other columns in the input file
     for row in reader:
-        if len(row) >= 2 and row[0] in lexicon and row[1] in lexicon:
+        if len(row) > 1 and row[0] in lexicon and row[1] in lexicon:
             isas[row[0]].add(row[1])
 
 idf, D = defaultdict(lambda: 0), .0

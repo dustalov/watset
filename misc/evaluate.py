@@ -21,8 +21,9 @@ def isas(path):
     with open(path, newline='') as f:
         reader = csv.reader(f, delimiter='\t')
 
-        for hyponym, hypernym in reader:
-            G.add_edge(sanitize(hyponym), sanitize(hypernym))
+        for row in reader:
+            if len(row) > 1 and row[0] and row[1]:
+                G.add_edge(sanitize(row[0]), sanitize(row[1]))
 
     return G
 
