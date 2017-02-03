@@ -90,3 +90,4 @@ ENV/
 
 *.ipynb
 *.tsv
+*.swp
