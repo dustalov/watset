@@ -28,8 +28,4 @@ for ISAS in $@; do
     --path=$CWD/../../projlearn/$CLUSTERS \
     --model=$MODEL <($CWD/filter.py $LEXICON < $ISAS) |
   $CWD/expanded.awk >$EXPANDED
-
-  cat $ISAS >> $EXPANDED
-
-  sort --parallel=$(nproc) -S1G -t $'\t' -u -k1 -k2 -o "$EXPANDED" $EXPANDED
 done
