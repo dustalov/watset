@@ -14,10 +14,16 @@ from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
 import concurrent.futures
 
+WEIGHT = {
+    'tf': lambda w, words: float(Counter(words)[w]),
+    'idf': lambda w, words: idf.get(w, 1.),
+    'tfidf': lambda w, words: float(Counter(words)[w]) * idf.get(w, 1.)
+}
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--synsets', required=True)
 parser.add_argument('--isas', required=True)
-parser.add_argument('--weight', choices=('tf', 'tfidf'), default='tfidf')
+parser.add_argument('--weight', choices=WEIGHT.keys(), default='tfidf')
 parser.add_argument('-k', nargs='?', type=int, default=6)
 args = vars(parser.parse_args())
 
@@ -40,9 +46,11 @@ isas = defaultdict(lambda: set())
 
 with open(args['isas']) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
-    for hyponym, hypernym in reader:
-        if hyponym in lexicon and hypernym in lexicon:
-            isas[hyponym].add(hypernym)
+
+    # not unpacking for skipping other columns in the input file
+    for row in reader:
+        if len(row) >= 2 and row[0] in lexicon and row[1] in lexicon:
+            isas[row[0]].add(row[1])
 
 idf, D = defaultdict(lambda: 0), .0
 
@@ -59,13 +67,7 @@ for words in synsets.values():
 
 idf = {hypernym: log(D / df) for hypernym, df in idf.items()}
 
-def tf(w, words):
-    return float(Counter(words)[w])
-
-def tfidf(w, words):
-    return tf(w, words) * idf.get(w, 1.)
-
-weight = tf if args['weight'] == 'tf' else tfidf
+weight = WEIGHT[args['weight']]
 
 hctx = {}
 
