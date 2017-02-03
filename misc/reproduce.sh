@@ -5,6 +5,10 @@ for WEIGHT in tf idf tfidf; do
 for SYNSETS in *-synsets.tsv; do
 for PAIRS in patterns-isas.txt; do
 for ISAS in {patterns,wiktionary,mas}{,-exp}-isas.txt; do
+  if [ ! -f "$ISAS" ]; then
+    touch "$ISAS"
+  fi
+
   LINKED=${SYNSETS%-synsets.tsv}-${ISAS%-isas.txt}-linked.tsv
   ./link.py --synsets=$SYNSETS --isas=$ISAS | sort -t $'\t' -k2nr -k4nr -k1n -o "$LINKED"
 
