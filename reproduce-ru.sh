@@ -39,12 +39,8 @@ mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/w2v
 eval/pairwise.py --gold=data/ru/ruthes-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-ruthes.tsv | sort -t $'\t' -g -k6r | column -t
 eval/pairwise.py --gold=data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k6r | column -t
 
-eval/cluster.sh eval/ru/**/*-synsets.tsv | tee cluster-ru-ruthes.tsv | column -t
-eval/cluster.sh eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
-
-eval/pairwise.py --gold=data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt ../babelnet-extract/pairs.ru.txt | tee pairwise-ru-ruthes-gold.tsv
-eval/pairwise.py --gold=data/ru/yarn-pairs.txt data/ru/ruthes-pairs.txt ../babelnet-extract/pairs.ru.txt | tee pairwise-ru-yarn-gold.tsv
-eval/pairwise.py --gold=../babelnet-extract/pairs.ru.txt data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt | tee pairwise-ru-babelnet-gold.tsv
+eval/cluster.sh data/ru/ruthes-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-ruthes.tsv | column -t
+eval/cluster.sh data/ru/yarn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
 
 join --header -j 1 -t $'\t' >results-ru-ruthes.tsv \
   <(head -1 pairwise-ru-ruthes.tsv; tail -n+2 pairwise-ru-ruthes.tsv | sed -re 's/-pairs.txt\t/\t/g'   | sort) \
@@ -53,3 +49,7 @@ join --header -j 1 -t $'\t' >results-ru-ruthes.tsv \
 join --header -j 1 -t $'\t' >results-ru-yarn.tsv \
   <(head -1 pairwise-ru-yarn.tsv; tail -n+2 pairwise-ru-yarn.tsv | sed -re 's/-pairs.txt\t/\t/g'   | sort) \
   <(head -1 cluster-ru-yarn.tsv;  tail -n+2 cluster-ru-yarn.tsv  | sed -re 's/-synsets.tsv\t/\t/g' | sort)
+
+eval/pairwise.py --gold=data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt ../babelnet-extract/pairs.ru.txt | tee pairwise-ru-xres-ruthes.tsv
+eval/pairwise.py --gold=data/ru/yarn-pairs.txt data/ru/ruthes-pairs.txt ../babelnet-extract/pairs.ru.txt | tee pairwise-ru-xres-yarn.tsv
+eval/pairwise.py --gold=../babelnet-extract/pairs.ru.txt data/ru/ruthes-pairs.txt data/ru/yarn-pairs.txt | tee pairwise-ru-xres-babelnet.tsv
