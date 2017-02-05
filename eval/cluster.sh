@@ -6,7 +6,7 @@ CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 GOLD=$1; shift
 
-if [ -z "$GOLD" ]; then
+if [ -z ${GOLD+x} ]; then
   echo "Usage: $0 gold-synsets.tsv [resource-synsets.tsv ...]"
   exit 1
 fi
@@ -35,14 +35,21 @@ comm -12 "$GOLD_DATA" "$RESOURCE_DATA" > $LEXICON
 
 $CWD/cnl.py "$LEXICON" < $GOLD > $GOLD_DATA
 
-echo -e "path\tsynsets\tgenconv_nmi\tovp_nmi"
+echo -e "path\twords\tsynsets\tgenconv_nmi\tovp_nmi"
 
 for RESOURCE in $@; do
   $CWD/cnl.py "$LEXICON" < $RESOURCE > $RESOURCE_DATA
 
+  WORDS=$($CWD/../lexicon.awk "$RESOURCE" | wc -l)
   SYNSETS=$(wc -l "$RESOURCE" | cut -f1 -d' ')
-  GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
-  OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
 
-  echo -e "$RESOURCE\t$SYNSETS\t$GENCONVNMI\t$OVPNMI"
+  if [ -z ${NONMI+x} ]; then
+    GENCONVNMI=$($CWD/../../GenConvNMI/bin/Release/gecmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
+    OVPNMI=$($CWD/../../OvpNMI/bin/Release/onmi "$GOLD_DATA" "$RESOURCE_DATA" || true)
+  else
+    GENCONVNMI="e"
+    OVPNMI="e"
+  fi
+
+  echo -e "$RESOURCE\t$WORDS\t$SYNSETS\t$GENCONVNMI\t$OVPNMI"
 done
