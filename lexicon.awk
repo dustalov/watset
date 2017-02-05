@@ -7,5 +7,5 @@ TOLOWER {
 }
 {
     gsub(/, /, ORS, $3);
-    print $3 | "sort --parallel=$(nproc) -S1G -us";
+    print $3 | "sort --parallel=$(nproc) -S1G -u";
 }
