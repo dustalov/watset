@@ -5,7 +5,6 @@
   <xsl:key name="concepts" match="/ruthes/concepts/concept" use="@id"/>
   <xsl:key name="synonyms" match="/ruthes/synonyms/entry_rel" use="@concept_id"/>
   <xsl:key name="entries" match="/ruthes/entries/entry" use="@id"/>
-  <!-- <xsl:key name="relations" match="/ruthes/relations/rel" use="@from"/> -->
   <xsl:template match="/">
     <xsl:for-each select="/ruthes/relations/rel">
       <xsl:if test="@name = &quot;ВЫШЕ&quot;">
