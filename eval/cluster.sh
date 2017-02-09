@@ -28,14 +28,14 @@ done
 
 sort --parallel=$(nproc) -S1G -uo "$RESOURCE_DATA" "$RESOURCE_DATA"
 
-comm -12 "$GOLD_DATA" "$RESOURCE_DATA" > $LEXICON
+LEXICON_SIZE=$(comm -12 "$GOLD_DATA" "$RESOURCE_DATA" | tee "$LEXICON" | wc -l)
 
 # Then, GOLD_DATA and RESOURCE_DATA are used to store the CNL data
 # representing the synsets.
 
 $CWD/cnl.py "$LEXICON" < $GOLD > $GOLD_DATA
 
-echo -e "path\twords\tsynsets\tgenconv_nmi\tovp_nmi"
+echo -e "path\twords\tsynsets\tlexicon\tgenconv_nmi\tovp_nmi"
 
 for RESOURCE in $@; do
   $CWD/cnl.py "$LEXICON" < $RESOURCE > $RESOURCE_DATA
@@ -51,5 +51,5 @@ for RESOURCE in $@; do
     OVPNMI="e"
   fi
 
-  echo -e "$RESOURCE\t$WORDS\t$SYNSETS\t$GENCONVNMI\t$OVPNMI"
+  echo -e "$RESOURCE\t$WORDS\t$SYNSETS\t$LEXICON_SIZE\t$GENCONVNMI\t$OVPNMI"
 done
