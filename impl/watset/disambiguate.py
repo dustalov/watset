@@ -14,13 +14,13 @@ from operator import itemgetter
 import concurrent.futures
 
 parser = argparse.ArgumentParser()
-parser.add_argument('wsi')
-args = vars(parser.parse_args())
+parser.add_argument('wsi', type=argparse.FileType('r'))
+args = parser.parse_args()
 
 wsi = defaultdict(lambda: dict())
 D   = []
 
-with open(args['wsi']) as f:
+with args.wsi as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
     for row in reader:
         word, sid, _, words = row

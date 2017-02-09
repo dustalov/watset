@@ -9,7 +9,7 @@ from collections import defaultdict, Counter
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--theta', nargs='?', type=float, default=.2)
-args = vars(parser.parse_args())
+args = parser.parse_args()
 
 unigrams = defaultdict(lambda: 0)
 bigrams  = defaultdict(lambda: defaultdict(lambda: 0))
@@ -35,7 +35,7 @@ index = defaultdict(lambda: set())
 
 for id, word in enumerate(unigrams):
     clusters[id] = {word}
-    clusters[id].update({neighbour for neighbour in bigrams[word] if prob(word, neighbour) > args['theta']})
+    clusters[id].update({neighbour for neighbour in bigrams[word] if prob(word, neighbour) > args.theta})
 
     for word in clusters[id]:
         index[word].add(id)
