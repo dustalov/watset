@@ -35,10 +35,10 @@ gold = resources.pop(args.gold)
 lexicon = words(gold) & set.union(*(words(pairs) for pairs in resources.values()))
 
 union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
+true  = [int(pair in gold) for pair in union]
 
 def tables(pairs):
-    true = [int(pair in pairs) for pair in union]
-    pred = [int(pair in gold)  for pair in union]
+    pred = [int(pair in pairs) for pair in union]
     return (true, pred)
 
 def scores(true, pred):
