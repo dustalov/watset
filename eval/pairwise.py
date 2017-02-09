@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
 parser.add_argument('path', nargs='+')
-args = vars(parser.parse_args())
+args = parser.parse_args()
 
 def synonyms(path):
     pairs = set()
@@ -27,25 +27,24 @@ def words(pairs):
     return {w for w, _ in pairs} | {w for _, w in pairs}
 
 with ProcessPoolExecutor() as executor:
-    paths     = args['path'] + [args['gold']]
+    paths     = args.path + [args.gold]
     resources = {path: pairs for path, pairs in zip(paths, executor.map(synonyms, paths))}
 
-gold = resources.pop(args['gold'])
+gold = resources.pop(args.gold)
 
 lexicon = words(gold) & set.union(*(words(pairs) for pairs in resources.values()))
 
 union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
 
 def tables(pairs):
-    true = [1 if pair in pairs else 0 for pair in union]
-    pred = [1 if pair in gold  else 0 for pair in union]
+    true = [int(pair in pairs) for pair in union]
+    pred = [int(pair in gold)  for pair in union]
     return (true, pred)
 
 def scores(true, pred):
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
 
     return {
-        'samples':   len(pred),
         'tn':        tn,
         'fp':        fp,
         'fn':        fn,
@@ -64,10 +63,9 @@ with ProcessPoolExecutor() as executor:
 print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1')))
 
 for path, values in results.items():
-    resource = resources[path]
     print('\t'.join((
         path,
-        str(len(resource)),
+        str(len(resources[path])),
         str(values['tn']),
         str(values['fp']),
         str(values['fn']),

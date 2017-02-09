@@ -7,10 +7,10 @@ import argparse
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument('lexicon')
-args = vars(parser.parse_args())
+parser.add_argument('lexicon', type=argparse.FileType('r'))
+args = parser.parse_args()
 
-with open(args['lexicon']) as f:
+with args.lexicon as f:
     lexicon = {word.lower(): i for i, word in enumerate(f.read().splitlines())}
 
 for row in sys.stdin:
