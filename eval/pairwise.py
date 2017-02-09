@@ -3,7 +3,7 @@
 import argparse
 import csv
 from concurrent.futures import ProcessPoolExecutor
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
@@ -38,15 +38,22 @@ lexicon = words(gold)
 if args['lexicon'] == 'joint':
     lexicon &= set.union(*(words(pairs) for pairs in resources.values()))
 
+union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
+
 def tables(pairs):
-    union = [pair for pair in (pairs | gold) if pair[0] in lexicon and pair[1] in lexicon]
-    true  = [1 if pair in pairs else 0 for pair in union]
-    pred  = [1 if pair in gold  else 0 for pair in union]
+    true = [1 if pair in pairs else 0 for pair in union]
+    pred = [1 if pair in gold  else 0 for pair in union]
     return (true, pred)
 
 def scores(true, pred):
+    tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
+
     return {
-        'accuracy':  accuracy_score(true, pred),
+        'samples':   len(pred),
+        'tn':        tn,
+        'fp':        fp,
+        'fn':        fn,
+        'tp':        tp,
         'precision': precision_score(true, pred),
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred)
@@ -58,15 +65,18 @@ def evaluate(path):
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
-print('\t'.join(('path', 'pairs', 'accuracy', 'precision', 'recall', 'f1')))
+print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1')))
 
 for path, values in results.items():
-    pairs = resources[path]
+    resource = resources[path]
     print('\t'.join((
         path,
-        str(len(pairs)),
-        str(values['accuracy']),
+        str(len(resource)),
+        str(values['tn']),
+        str(values['fp']),
+        str(values['fn']),
+        str(values['tp']),
         str(values['precision']),
         str(values['recall']),
-        str(values['f1'])
+        str(values['f1']),
     )))
