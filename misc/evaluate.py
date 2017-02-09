@@ -35,11 +35,10 @@ gold = resources.pop(args.gold)
 lexicon = set(gold.nodes()) & set.union(*(set(G.nodes()) for G in resources.values()))
 
 union = [pair for pair in set(gold.edges()) | set.union(*(set(G.edges()) for G in resources.values())) if pair[0] in lexicon and pair[1] in lexicon]
+true  = [int(nx.has_path(gold, *pair)) for pair in union]
 
 def tables(G):
-    true  = [int(pair[0] in gold and pair[1] in gold and nx.has_path(gold, *pair)) for pair in union]
-    pred  = [int(pair[0] in G    and pair[1] in G    and nx.has_path(G,    *pair)) for pair in union]
-
+    pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in union]
     return (true, pred)
 
 def scores(true, pred):
