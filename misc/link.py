@@ -21,15 +21,15 @@ WEIGHT = {
 }
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--synsets', required=True)
-parser.add_argument('--isas', required=True)
+parser.add_argument('--synsets', required=True, type=argparse.FileType('r'))
+parser.add_argument('--isas', required=True, type=argparse.FileType('r'))
 parser.add_argument('--weight', choices=WEIGHT.keys(), default='tfidf')
 parser.add_argument('-k', nargs='?', type=int, default=6)
-args = vars(parser.parse_args())
+args = parser.parse_args()
 
 synsets, index, lexicon = {}, defaultdict(lambda: list()), set()
 
-with open(args['synsets']) as f:
+with open(args.synsets) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
     for row in reader:
@@ -44,7 +44,7 @@ index = {word: {id: i + 1 for i, id in enumerate(ids)} for word, ids in index.it
 
 isas = defaultdict(lambda: set())
 
-with open(args['isas']) as f:
+with open(args.isas) as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
     for row in reader:
@@ -66,7 +66,7 @@ for words in synsets.values():
 
 idf = {hypernym: log(D / df) for hypernym, df in idf.items()}
 
-weight = WEIGHT[args['weight']]
+weight = WEIGHT[args.weight]
 
 hctx = {}
 
@@ -100,7 +100,7 @@ def emit(id):
         if cosine > 0:
             hsenses[(hypernym, hid)] = cosine
 
-    hsenses = dict(dict(sorted(hsenses.items(), key=itemgetter(1), reverse=True)[:args['k']]).keys())
+    hsenses = dict(dict(sorted(hsenses.items(), key=itemgetter(1), reverse=True)[:args.k]).keys())
     hsenses = {hypernym: hid for hypernym, hid in hsenses.items() if hypernym not in synsets[id]}
 
     return (id, hsenses)

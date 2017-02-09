@@ -4,13 +4,12 @@ import argparse
 import csv
 from concurrent.futures import ProcessPoolExecutor
 import networkx as nx
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
-parser.add_argument('--lexicon', choices=('gold', 'joint'), default='joint')
 parser.add_argument('path', nargs='+')
-args = vars(parser.parse_args())
+args = parser.parse_args()
 
 def sanitize(str):
     return str.lower().replace(' ', '_')
@@ -28,27 +27,29 @@ def isas(path):
     return G
 
 with ProcessPoolExecutor() as executor:
-    paths     = args['path'] + [args['gold']]
+    paths     = args.path + [args.gold]
     resources = {path: G for path, G in zip(paths, executor.map(isas, paths))}
 
-gold = resources.pop(args['gold'])
+gold = resources.pop(args.gold)
 
-lexicon = set(gold.nodes())
+lexicon = set(gold.nodes()) & set.union(*(set(G.nodes()) for G in resources.values()))
 
-if args['lexicon'] == 'joint':
-    lexicon &= set.union(*(set(G.nodes()) for G in resources.values()))
+union = [pair for pair in set(gold.edges()) | set.union(*(set(G.edges()) for G in resources.values())) if pair[0] in lexicon and pair[1] in lexicon]
 
 def tables(G):
-    union = [pair for pair in set(gold.edges()) | set(G.edges()) if pair[0] in lexicon and pair[1] in lexicon]
-
     true  = [int(pair[0] in gold and pair[1] in gold and nx.has_path(gold, *pair)) for pair in union]
     pred  = [int(pair[0] in G    and pair[1] in G    and nx.has_path(G,    *pair)) for pair in union]
 
     return (true, pred)
 
 def scores(true, pred):
+    tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
+
     return {
-        'accuracy':  accuracy_score(true, pred),
+        'tn':        tn,
+        'fp':        fp,
+        'fn':        fn,
+        'tp':        tp,
         'precision': precision_score(true, pred),
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred)
@@ -60,13 +61,16 @@ def evaluate(path):
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
-print('\t'.join(('path', 'pairs', 'accuracy', 'precision', 'recall', 'f1')))
+print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1')))
 
 for path, values in results.items():
     print('\t'.join((
         path,
         str(resources[path].size()),
-        str(values['accuracy']),
+        str(values['tn']),
+        str(values['fp']),
+        str(values['fn']),
+        str(values['tp']),
         str(values['precision']),
         str(values['recall']),
         str(values['f1'])
