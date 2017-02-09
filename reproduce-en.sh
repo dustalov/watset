@@ -41,7 +41,7 @@ eval/pairwise.py --gold=../babelnet-extract/pairs.en.txt eval/en/**/*-pairs.txt 
 eval/pairwise.py --gold=data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-twsi.tsv | sort -t $'\t' -g -k6r | column -t
 
 eval/cluster.sh data/en/wordnet-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-wordnet.tsv | column -t
-eval/cluster.sh ../babelnet-extract/synsets.en.tsv eval/en/**/*-synsets.tsv | tee cluster-en-babelnet.tsv | column -t
+NONMI=1 eval/cluster.sh ../babelnet-extract/synsets.en.tsv eval/en/**/*-synsets.tsv | tee cluster-en-babelnet.tsv | column -t
 eval/cluster.sh data/en/twsi-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-twsi.tsv | column -t
 
 join --header -j 1 -t $'\t' >results-en-wordnet.tsv \
