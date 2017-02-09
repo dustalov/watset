@@ -7,7 +7,6 @@ from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
-parser.add_argument('--lexicon', choices=('gold', 'joint'), default='joint')
 parser.add_argument('path', nargs='+')
 args = vars(parser.parse_args())
 
@@ -33,10 +32,7 @@ with ProcessPoolExecutor() as executor:
 
 gold = resources.pop(args['gold'])
 
-lexicon = words(gold)
-
-if args['lexicon'] == 'joint':
-    lexicon &= set.union(*(words(pairs) for pairs in resources.values()))
+lexicon = words(gold) & set.union(*(words(pairs) for pairs in resources.values()))
 
 union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
 
