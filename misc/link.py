@@ -29,7 +29,7 @@ args = parser.parse_args()
 
 synsets, index, lexicon = {}, defaultdict(lambda: list()), set()
 
-with open(args.synsets) as f:
+with args.synsets as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
     for row in reader:
@@ -44,7 +44,7 @@ index = {word: {id: i + 1 for i, id in enumerate(ids)} for word, ids in index.it
 
 isas = defaultdict(lambda: set())
 
-with open(args.isas) as f:
+with args.isas as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
 
     for row in reader:
