@@ -1,14 +1,13 @@
 export LANG:=en_US.UTF-8
 export LC_COLLATE:=C
+export SHELL:=/bin/bash
 
 all: patterns wiktionary mas ruthes
 
 filter:
-	../lexicon.awk *-synsets.tsv > lexicon.tmp
-	./filter.py -1 lexicon.tmp <patterns-isas.txt >patterns-filter-isas.txt
-	./filter.py -1 lexicon.tmp <wiktionary-isas.txt >wiktionary-filter-isas.txt
-	./filter.py -1 lexicon.tmp <mas-isas.txt >mas-filter-isas.txt
-	rm -fv lexicon.tmp
+	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <patterns-isas.txt >patterns-filter-isas.txt
+	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <wiktionary-isas.txt >wiktionary-filter-isas.txt
+	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <mas-isas.txt >mas-filter-isas.txt
 
 expand:
 	./expand.sh {patterns,wiktionary,mas}-filter-isas.txt
