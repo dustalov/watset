@@ -14,23 +14,21 @@ rm -rfv eval/ru
 make data-ru
 
 make -C impl clean
-mv -fv data/edges.txt data/edges.count.txt
-ln -sfTv edges.count.txt data/edges.txt
+ln -sfTv ru/edges.count.txt data/edges.txt
 make impl
 mkdir -p eval/ru/count
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/count
 
 make -C impl clean
-sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
-ln -sfTv edges.ones.txt data/edges.txt
+ln -sfTv ru/edges.ones.txt data/edges.txt
 make impl
 rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/ru/ones
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/ones
 
 make -C impl clean
-./similarities.py ../projlearn/all.norm-sz500-w10-cb0-it3-min5.w2v <data/edges.count.txt >data/edges.w2v.txt
-ln -sfTv edges.w2v.txt data/edges.txt
+./similarities.py ../projlearn/all.norm-sz500-w10-cb0-it3-min5.w2v <data/ru/edges.count.txt >data/ru/edges.w2v.txt
+ln -sfTv ru/edges.w2v.txt data/edges.txt
 make impl
 rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/ru/w2v

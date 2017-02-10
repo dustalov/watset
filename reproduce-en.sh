@@ -14,23 +14,21 @@ rm -rfv eval/en
 make data-en
 
 make -C impl clean
-mv -fv data/edges.txt data/edges.count.txt
-ln -sfTv edges.count.txt data/edges.txt
+ln -sfTv en/edges.count.txt data/edges.txt
 make impl
 mkdir -p eval/en/count
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/en/count
 
 make -C impl clean
-sed -re 's/[[:digit:]]+$/1/g' data/edges.count.txt > data/edges.ones.txt
-ln -sfTv edges.ones.txt data/edges.txt
+ln -sfTv en/edges.ones.txt data/edges.txt
 make impl
 rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/en/ones
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/en/ones
 
 make -C impl clean
-./similarities.py ../projlearn/GoogleNews-vectors-negative300.bin <data/edges.count.txt >data/edges.w2v.txt
-ln -sfTv edges.w2v.txt data/edges.txt
+./similarities.py ../projlearn/GoogleNews-vectors-negative300.bin <data/en/edges.count.txt >data/en/edges.w2v.txt
+ln -sfTv en/edges.w2v.txt data/edges.txt
 make impl
 rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/en/w2v

@@ -5,11 +5,9 @@ export LC_COLLATE:=C
 
 ru:
 	$(MAKE) -C ru all
-	ln -sfT $(CURDIR){/ru,}/edges.txt
 
 en:
 	$(MAKE) -C en all
-	ln -sfT $(CURDIR){/en,}/edges.txt
 
 clean:
 	$(MAKE) -C ru clean
