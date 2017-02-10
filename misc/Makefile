@@ -4,13 +4,13 @@ export SHELL:=/bin/bash
 
 all: patterns wiktionary mas ruthes
 
-filter:
+filter: all
 	awk -F'\t' '$$3>=30' patterns-isas.txt | ./filter.py -1 <(../lexicon.awk *-synsets.tsv) >patterns-limit-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <patterns-isas.txt >patterns-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <wiktionary-isas.txt >wiktionary-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <mas-isas.txt >mas-filter-isas.txt
 
-expand:
+expand: filter
 	./expand.sh {patterns,patterns-limit,wiktionary,mas}-filter-isas.txt
 
 patterns: ru-librusec-wiki-diff.csv.gz
