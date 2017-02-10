@@ -9,10 +9,6 @@ CLUSTERS=20170122-russian/sz500-k20-l1.0
 
 MODEL=regularized_synonym
 
-LEXICON=$(mktemp)
-
-trap 'rm -f -- "$LEXICON"' INT TERM HUP EXIT
-
 $CWD/../lexicon.awk *-synsets.tsv > $LEXICON
 
 for ISAS in $@; do
@@ -26,6 +22,6 @@ for ISAS in $@; do
     --w2v=$CWD/../../projlearn/$W2V \
     --kmeans=$CWD/../../projlearn/$CLUSTERS/kmeans.pickle \
     --path=$CWD/../../projlearn/$CLUSTERS \
-    --model=$MODEL <($CWD/filter.py -1 $LEXICON < $ISAS) |
+    --model=$MODEL |
   $CWD/expanded.awk >$EXPANDED
 done
