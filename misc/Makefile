@@ -3,8 +3,15 @@ export LC_COLLATE:=C
 
 all: patterns wiktionary mas ruthes
 
+filter:
+	../lexicon.awk *-synsets.tsv > lexicon.tmp
+	./filter.py -1 lexicon.tmp <patterns-isas.txt >patterns-filter-isas.txt
+	./filter.py -1 lexicon.tmp <wiktionary-isas.txt >wiktionary-filter-isas.txt
+	./filter.py -1 lexicon.tmp <mas-isas.txt >mas-filter-isas.txt
+	rm -fv lexicon.tmp
+
 expand:
-	./expand.sh {patterns,wiktionary,mas}-isas.txt
+	./expand.sh {patterns,wiktionary,mas}-filter-isas.txt
 
 patterns: ru-librusec-wiki-diff.csv.gz
 	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | tr ' ' '_' | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3nr,1 -k1,2 -s | cut -f1,2 >patterns-isas.txt
