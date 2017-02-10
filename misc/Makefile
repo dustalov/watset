@@ -24,7 +24,7 @@ patterns: ru-librusec-wiki-diff.csv.gz
 ru-librusec-wiki-diff.csv.gz:
 	curl -sLO 'http://panchenko.me/data/joint/isas/ru-librusec-wiki-diff.csv.gz'
 
-wiktionary: ruwiktionary.tsv
+wiktionary:
 	@echo "# Assuming that you have Wiktionary as ${CURDIR}/../data/ru/ruwiktionary.tsv."
 	../data/wiktionary.awk -v RELATION=HYPERNYM ../data/ru/ruwiktionary.tsv >wiktionary-isas.txt
 
