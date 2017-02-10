@@ -26,6 +26,6 @@ for ISAS in $@; do
     --w2v=$CWD/../../projlearn/$W2V \
     --kmeans=$CWD/../../projlearn/$CLUSTERS/kmeans.pickle \
     --path=$CWD/../../projlearn/$CLUSTERS \
-    --model=$MODEL <($CWD/filter.py $LEXICON < $ISAS) |
+    --model=$MODEL <($CWD/filter.py -1 $LEXICON < $ISAS) |
   $CWD/expanded.awk >$EXPANDED
 done
