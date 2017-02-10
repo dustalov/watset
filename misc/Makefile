@@ -5,15 +5,16 @@ export SHELL:=/bin/bash
 all: patterns wiktionary mas ruthes
 
 filter:
+	awk -F'\t' '$$3>=30' patterns-isas.txt | ./filter.py -1 <(../lexicon.awk *-synsets.tsv) >patterns-limit-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <patterns-isas.txt >patterns-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <wiktionary-isas.txt >wiktionary-filter-isas.txt
 	./filter.py -1 <(../lexicon.awk *-synsets.tsv) <mas-isas.txt >mas-filter-isas.txt
 
 expand:
-	./expand.sh {patterns,wiktionary,mas}-filter-isas.txt
+	./expand.sh {patterns,patterns-limit,wiktionary,mas}-filter-isas.txt
 
 patterns: ru-librusec-wiki-diff.csv.gz
-	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | tr ' ' '_' | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3nr,1 -k1,2 -s | cut -f1,2 >patterns-isas.txt
+	zcat ru-librusec-wiki-diff.csv.gz | tail -n+2 | tr ' ' '_' | sort --parallel=$$(nproc) -t$$'\t' -S1G -k3,3nr -k1,1 -s >patterns-isas.txt
 
 ru-librusec-wiki-diff.csv.gz:
 	curl -sLO 'http://panchenko.me/data/joint/isas/ru-librusec-wiki-diff.csv.gz'
