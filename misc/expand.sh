@@ -20,6 +20,6 @@ for ISAS in $@; do
     --w2v=$CWD/../../projlearn/$W2V \
     --kmeans=$CWD/../../projlearn/$CLUSTERS/kmeans.pickle \
     --path=$CWD/../../projlearn/$CLUSTERS \
-    --model=$MODEL |
+    --model=$MODEL "$ISAS" |
   $CWD/expanded.awk >$EXPANDED
 done
