@@ -1,12 +1,13 @@
 export LANG:=en_US.UTF-8
 export LC_COLLATE:=C
-export LC_CTYPE:=C
+export SHELL:=/bin/bash
 
 all: raw graph gold
 
 raw: enwiktionary.tsv
 
 enwiktionary.tsv:
+	curl -sL 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170120.tsv' -o 'enwiktionary.tsv'
 
 graph: raw
 	@echo "# Generating the word graph."

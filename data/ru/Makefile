@@ -1,13 +1,13 @@
 export LANG:=en_US.UTF-8
 export LC_COLLATE:=C
+export SHELL:=/bin/bash
 
 all: raw graph gold
 
-raw: wiktionary.tsv abramov.dat unldc.tsv
+raw: ruwiktionary.tsv abramov.dat unldc.tsv
 
-wiktionary.tsv:
-	@echo "# Downloading the Russian Wiktionary."
-	curl -s 'http://ustalov.imm.uran.ru/pub/projlearn-ruwikt.tar.gz' | tar -xOzf - projlearn-ruwikt/all_ru_pairs_ruwikt20160210_parsed.txt >wiktionary.tsv
+ruwiktionary.tsv:
+	curl -sL 'http://depot.nlpub.ru/wiktionary/ruwiktionary-20170201.tsv' -o 'ruwiktionary.tsv'
 
 abramov.dat:
 	@echo "# Downloading the Abramov's dictionary."

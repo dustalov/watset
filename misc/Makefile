@@ -25,10 +25,8 @@ ru-librusec-wiki-diff.csv.gz:
 	curl -sLO 'http://panchenko.me/data/joint/isas/ru-librusec-wiki-diff.csv.gz'
 
 wiktionary: ruwiktionary.tsv
-	./wiktionary-isas.awk ruwiktionary.tsv >wiktionary-isas.txt
-
-ruwiktionary.tsv:
-	curl -sL 'http://depot.nlpub.ru/wiktionary/ruwiktionary-20170201.tsv' -o 'ruwiktionary.tsv'
+	@echo "# Assuming that you have Wiktionary as ${CURDIR}/../data/ru/ruwiktionary.tsv."
+	../data/wiktionary.awk -v RELATION=HYPERNYM ../data/ru/ruwiktionary.tsv >wiktionary-isas.txt
 
 mas:
 	@echo "# Assuming that you have MAS as is-a-rel_MAS.txt."
