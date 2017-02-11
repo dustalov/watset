@@ -14,12 +14,12 @@ for ISAS in $@; do
     continue
   fi
 
-  EXPANDED=${ISAS%-isas.txt}-exp-isas.txt
+  EXPANDED=${ISAS%-isas.txt}-exp
 
   $CWD/../../projlearn/expand.py \
     --w2v=$CWD/../../projlearn/$W2V \
     --kmeans=$CWD/../../projlearn/$CLUSTERS/kmeans.pickle \
     --path=$CWD/../../projlearn/$CLUSTERS \
     --model=$MODEL "$ISAS" |
-  $CWD/expanded.awk >$EXPANDED
+  tee $EXPANDED.txt | $CWD/expanded.awk -v T=$THRESHOLD > $EXPANDED-isas.txt
 done
