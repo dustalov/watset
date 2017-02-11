@@ -8,7 +8,7 @@ import csv
 import sys
 import itertools
 from collections import defaultdict, Counter
-from math import log
+from math import log2
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
@@ -64,7 +64,7 @@ for words in synsets.values():
 
     D += 1
 
-idf = {hypernym: log(D / df) for hypernym, df in idf.items()}
+idf = {hypernym: log2(D / df) for hypernym, df in idf.items()}
 
 weight = WEIGHT[args.weight]
 
