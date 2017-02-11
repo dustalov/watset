@@ -9,7 +9,7 @@ for ISAS in {patterns,patterns-limit,wiktionary,mas,joint}-filter{,-exp}-isas.tx
   fi
 
   LINKED=${SYNSETS%-synsets.tsv}-${ISAS%-isas.txt}-$WEIGHT-linked.tsv
-  ./link.py --synsets=$SYNSETS --isas=$ISAS | sort -t $'\t' -k2nr -k4nr -k1n -o "$LINKED"
+  ./link.py --synsets=$SYNSETS --isas=$ISAS --weight=$WEIGHT | sort -t $'\t' -k2nr -k4nr -k1n -o "$LINKED"
 
   ISAS=${LINKED%-linked.tsv}-isas.txt
   ./linked-isas.awk "$LINKED" > "$ISAS"
