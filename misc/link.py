@@ -11,7 +11,6 @@ from collections import defaultdict, Counter
 from math import log2
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
-from operator import itemgetter
 import concurrent.futures
 
 WEIGHT = {

@@ -10,7 +10,6 @@ import sys
 from collections import defaultdict, Counter
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
-from operator import itemgetter
 import concurrent.futures
 
 parser = argparse.ArgumentParser()
