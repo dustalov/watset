@@ -90,7 +90,8 @@ def emit(id):
         hsenses = Counter({hid: sim(v.transform({word: weight(word, synsets[hid]) for word in synsets[hid]}), hvector).item(0) for hid in index[hypernym]})
 
         for hid, cosine in hsenses.most_common(1):
-            candidates[(hypernym, hid)] = cosine
+            if cosine > 0:
+                candidates[(hypernym, hid)] = cosine
 
     matches = [(hypernym, hid) for (hypernym, hid), _ in candidates.most_common(args.k) if hypernym not in synsets[id]]
 
