@@ -7,7 +7,7 @@ import argparse
 import csv
 import gc
 import sys
-from collections import defaultdict
+from collections import defaultdict, Counter
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 from operator import itemgetter
@@ -37,44 +37,39 @@ with args.wsi as f:
 v = DictVectorizer().fit(D)
 
 def emit(word):
-    sneighbours = {}
+    senses = {}
 
     for sid, words in wsi[word].items():
-        sense    = '%s#%d' % (word, sid)
+        sense = '%s#%d' % (word, sid)
 
-        features = words.copy()
-        features.update({word: 1.})
+        senses[sense] = {}
 
-        vector = v.transform(features)
-
-        sneighbours[sense] = {}
+        vector = v.transform({**words, **{word: 1.}})
 
         for neighbour, weight in words.items():
-            neighbours   = wsi[neighbour]
-            candidates   = {nsid: sim(vector, v.transform(neighbours[nsid])).item(0) for nsid in neighbours}
+            candidates = Counter({nsid: sim(v.transform(neighbours), vector).item(0) for nsid, neighbours in wsi[neighbour].items()})
 
             if not candidates:
                 print('Missing candidates for "%s": "%s".' % (word, neighbour), file=sys.stderr)
                 continue
 
-            nsid, cosine = max(candidates.items(), key=itemgetter(1))
+            for nsid, cosine in candidates.most_common(1):
+                if cosine > 0:
+                    nsense = '%s#%d' % (neighbour, nsid)
+                    senses[sense][nsense] = weight
+                else:
+                    print('Can not estimate the sense for "%s": "%s".' % (word, neighbour), file=sys.stderr)
 
-            if cosine > 0:
-                nsense = '%s#%d' % (neighbour, nsid)
-                sneighbours[sense][nsense] = weight
-            else:
-                print('Can not estimate the sense for "%s": "%s".' % (word, neighbour), file=sys.stderr)
-
-    return sneighbours
+    return senses
 
 with concurrent.futures.ProcessPoolExecutor() as executor:
     futures = (executor.submit(emit, word) for word in wsi)
 
     for i, future in enumerate(concurrent.futures.as_completed(futures)):
-        sneighbours = future.result()
+        senses = future.result()
 
-        for sense, neighbours in sneighbours.items():
-            for nsense, weight in neighbours.items():
+        for sense, nsenses in senses.items():
+            for nsense, weight in nsenses.items():
                 print('%s\t%s\t%f' % (sense, nsense, weight))
 
         if (i + 1) % 1000 == 0:
