@@ -5,7 +5,6 @@ signal(SIGPIPE, SIG_DFL)
 
 import argparse
 import csv
-import gc
 import sys
 from collections import defaultdict, Counter
 from sklearn.feature_extraction import DictVectorizer
