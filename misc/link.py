@@ -84,37 +84,28 @@ def emit(id):
     if not id in hctx:
         return (id, {})
 
-    hypernyms, vector, hsenses = hctx[id], v.transform(hctx[id]), {}
+    hvector, candidates = v.transform(hctx[id]), Counter()
 
-    for hypernym in hypernyms:
-        candidates = {hid: synsets[hid] for hid in index[hypernym]}
+    for hypernym in hctx[id]:
+        hsenses = Counter({hid: sim(v.transform({word: weight(word, synsets[hid]) for word in synsets[hid]}), hvector).item(0) for hid in index[hypernym]})
 
-        if not candidates:
-            continue
+        for hid, cosine in hsenses.most_common(1):
+            candidates[(hypernym, hid)] = cosine
 
-        candidates = {hid: {word: weight(word, words) for word in words} for hid, words in candidates.items()}
-        candidates = {hid: sim(vector, v.transform(words)) for hid, words in candidates.items()}
+    matches = [(hypernym, hid) for (hypernym, hid), _ in candidates.most_common(args.k) if hypernym not in synsets[id]]
 
-        hid, cosine = max(candidates.items(), key=itemgetter(1))
-
-        if cosine > 0:
-            hsenses[(hypernym, hid)] = cosine
-
-    hsenses = dict(dict(sorted(hsenses.items(), key=itemgetter(1), reverse=True)[:args.k]).keys())
-    hsenses = {hypernym: hid for hypernym, hid in hsenses.items() if hypernym not in synsets[id]}
-
-    return (id, hsenses)
+    return (id, matches)
 
 with concurrent.futures.ProcessPoolExecutor() as executor:
     futures = (executor.submit(emit, id) for id in synsets)
 
     for i, future in enumerate(concurrent.futures.as_completed(futures)):
-        id, hsenses = future.result()
+        id, matches = future.result()
 
         senses = [(word, index[word][id]) for word in synsets[id]]
         senses_str = ', '.join(('%s#%d' % sense for sense in senses))
 
-        isas = [(word, index[word][hid]) for word, hid in hsenses.items()]
+        isas = [(word, index[word][hid]) for word, hid in matches]
         isas_str = ', '.join(('%s#%d' % sense for sense in isas))
 
         print('\t'.join((str(id), str(len(synsets[id])), senses_str, str(len(isas)), isas_str)))
