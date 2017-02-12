@@ -32,4 +32,4 @@ ruthes:
 
 clean:
 	rm -fv ru-librusec-wiki-diff.csv.gz
-	rm -fv *-isas.txt *-linked.tsv
+	rm -fv *-exp.txt *-isas.txt *-linked.tsv
