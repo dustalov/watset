@@ -8,7 +8,7 @@ joint: patterns wiktionary mas
 	cat {patterns-limit,wiktionary,mas}-isas.txt >joint-isas.txt
 
 expand: patterns wiktionary mas
-	./expand.sh {patterns,patterns-limit,wiktionary,mas}-isas.txt
+	./expand.sh {patterns-limit,wiktionary,mas}-isas.txt
 	cat {patterns-limit,wiktionary,mas}-exp-isas.txt >joint-exp-isas.txt
 
 patterns: ru-librusec-wiki-diff.csv.gz
