@@ -5,8 +5,8 @@ ISAS="patterns-isas.txt patterns-limit-isas.txt patterns-limit-exp-isas.txt patt
 SEED=1337
 TRAIN=50
 
-# ./isa-hit.py --freq=freqrnc2012.csv -n 300 $ISAS > isa-300-hit.tsv
-# ./hypergroup.py < isa-300-hit.tsv | ./toloka.awk > toloka-isa-300-hit.tsv
+./isa-hit.py --freq=freqrnc2012.csv -n 300 $ISAS > isa-300-hit.tsv
+./hypergroup.py < isa-300-hit.tsv | ./toloka.awk > toloka-isa-300-hit.tsv
 
 ./isa-hit.py --freq=freqrnc2012.csv --skip=300 -n 300 $ISAS > isa-300-skip-300-hit.tsv
 cat \
