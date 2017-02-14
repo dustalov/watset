@@ -30,6 +30,9 @@ ruthes:
 	@echo "# Assuming that you have processed RuThes as ${CURDIR}/../data/ru/ruthes.xml."
 	xsltproc ruthes-isas.xsl ../data/ru/ruthes.xml >ruthes-isas.txt
 
+freqrnc2012.csv:
+	curl -sLO 'https://hsemysql.wikispaces.com/file/view/freqrnc2012.csv/404746392/freqrnc2012.csv'
+
 clean:
 	rm -fv ru-librusec-wiki-diff.csv.gz
 	rm -fv *-exp.txt *-isas.txt *-linked.tsv
