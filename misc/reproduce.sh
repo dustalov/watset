@@ -3,7 +3,7 @@ export LANG=en_US.UTF-8 LC_COLLATE=C
 
 for WEIGHT in tf idf tfidf; do
 for SYNSETS in *-synsets.tsv; do
-for ISAS in patterns{,filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt; do
+for ISAS in patterns{,-filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt; do
   if [ ! -f "$ISAS" ]; then
     touch "$ISAS"
   fi
@@ -19,4 +19,4 @@ done
 done
 done
 
-./evaluate.py --gold=ruthes-isas.txt patterns{,filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt $EVALUATE | tee pairwise-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
+./evaluate.py --gold=ruthes-isas.txt patterns{,-filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt $EVALUATE | tee pairwise-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
