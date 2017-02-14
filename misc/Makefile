@@ -34,5 +34,5 @@ freqrnc2012.csv:
 	curl -sLO 'https://hsemysql.wikispaces.com/file/view/freqrnc2012.csv/404746392/freqrnc2012.csv'
 
 clean:
-	rm -fv ru-librusec-wiki-diff.csv.gz
+	rm -fv ru-librusec-wiki-diff.csv.gz freqrnc2012.csv
 	rm -fv *-exp.txt *-isas.txt *-linked.tsv
