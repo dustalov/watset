@@ -92,7 +92,7 @@ def emit(id):
             if cosine > 0:
                 candidates[(hypernym, hid)] = cosine
 
-    matches = [(hypernym, hid) for (hypernym, hid), _ in candidates.most_common(args.k) if hypernym not in synsets[id]]
+    matches = [(hypernym, hid, cosine) for (hypernym, hid), cosine in candidates.most_common(args.k) if hypernym not in synsets[id]]
 
     return (id, matches)
 
@@ -105,8 +105,8 @@ with concurrent.futures.ProcessPoolExecutor() as executor:
         senses = [(word, index[word][id]) for word in synsets[id]]
         senses_str = ', '.join(('%s#%d' % sense for sense in senses))
 
-        isas = [(word, index[word][hid]) for word, hid in matches]
-        isas_str = ', '.join(('%s#%d' % sense for sense in isas))
+        isas = [(word, index[word][hid], cosine) for word, hid, cosine in matches]
+        isas_str = ', '.join(('%s#%d:%.6f' % sense for sense in isas))
 
         print('\t'.join((str(id), str(len(synsets[id])), senses_str, str(len(isas)), isas_str)))
 

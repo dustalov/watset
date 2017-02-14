@@ -11,8 +11,8 @@ BEGIN {
     for (sense in senses) {
         for (isa in isas) {
             sub(/#[[:digit:]]+$/, "", senses[sense]);
-            sub(/#[[:digit:]]+$/, "", isas[isa]);
-            print senses[sense], isas[isa] | "sort --parallel=$(nproc) -t \"\t\" -S1G -k1,1 -s";
+            sub(/#[[:digit:]]+(:|$)/, OFS, isas[isa]);
+            print senses[sense], isas[isa] | "sort --parallel=$(nproc) -t \"\t\" -S1G -s -g -k3r | cut -f1,2";
         }
     }
 }
