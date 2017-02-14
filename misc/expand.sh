@@ -21,5 +21,5 @@ for ISAS in $@; do
     --kmeans=$CWD/../../projlearn/$CLUSTERS/kmeans.pickle \
     --path=$CWD/../../projlearn/$CLUSTERS \
     --model=$MODEL "$ISAS" |
-  tee $EXPANDED.txt | $CWD/expanded.awk -v T=$THRESHOLD > $EXPANDED-isas.txt
+  tee $EXPANDED.txt | $CWD/exp-isas.awk -v T=$THRESHOLD > $EXPANDED-isas.txt
 done
