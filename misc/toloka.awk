@@ -5,11 +5,15 @@ BEGIN {
 }
 NR == 1 {
     for (i=1; i<=NF; i++) ix[$i] = i;
+    next;
 }
-NR > 1 && $ix["found"] {
+!$ix["found"] {
+    next;
+}
+{
     hypernyms[$ix["hypernym"] OFS $ix["genitive"]];
 }
-NR > 1 && $ix["found"] && $ix["hyponym"] != hyponym {
+$ix["hyponym"] != hyponym {
     for (hypernym_genitive in hypernyms) {
         print $ix["hyponym"], hypernym_genitive, "", "";
     }
