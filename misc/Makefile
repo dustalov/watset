@@ -36,4 +36,4 @@ freqrnc2012.csv:
 
 clean:
 	rm -fv ru-librusec-wiki-diff.csv.gz freqrnc2012.csv
-	rm -fv *-exp.txt *-isas.txt *-linked.tsv
+	rm -fv *-exp.txt *-isas.txt *-linked.tsv *-hit.tsv

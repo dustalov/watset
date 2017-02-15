@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE, SIG_DFL)
-
 import argparse
 import csv
 from collections import defaultdict
 import concurrent.futures
 import operator
-import networkx as nx
 import sys
 import pymorphy2
-from functools import lru_cache
+
+from signal import signal, SIGINT
+signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--freq', required=True, type=argparse.FileType('r'))
@@ -35,30 +33,8 @@ def top(data, n, skip=0, reverse=False):
 
 lexicon = top(freq, args.n, args.skip, reverse=True)
 
-def isas(path):
-    G = nx.DiGraph()
-
-    with open(path, newline='') as f:
-        reader = csv.reader(f, delimiter='\t')
-
-        for row in reader:
-            hyponym, hypernym = sanitize(row[0]), sanitize(row[1])
-
-            if hyponym in freq and hyponym != hypernym:
-                if not hyponym in G:
-                    G.add_node(hyponym)
-
-                if hypernym not in G[hyponym]:
-                    G[hyponym][hypernym] = len(G[hyponym]) + 1
-
-    return G
-
-with concurrent.futures.ProcessPoolExecutor() as executor:
-    resources = {path: G for path, G in zip(args.path, executor.map(isas, args.path))}
-
 morph = pymorphy2.MorphAnalyzer()
 
-@lru_cache(maxsize=None)
 def inflect(word):
     if not word:
         return word
@@ -77,16 +53,39 @@ def inflect(word):
 
     return (inflection.word if inflection else word) + suffix
 
-writer = csv.writer(sys.stdout, delimiter='\t')
-writer.writerow(('resource', 'hyponym', 'found', 'hypernym', 'genitive', 'freq', 'n'))
+def emit(path):
+    isas = defaultdict(lambda: dict())
 
-for n, hyponym in enumerate(lexicon):
-    for resource, G in resources.items():
-        hypernyms = top(G[hyponym], args.k) if hyponym in G else []
+    with open(path, newline='') as f:
+        reader = csv.reader(f, delimiter='\t')
+
+        for row in reader:
+            hyponym, hypernym = sanitize(row[0]), sanitize(row[1])
+
+            if hyponym in freq and hyponym != hypernym:
+                if hypernym not in isas[hyponym]:
+                    isas[hyponym][hypernym] = len(isas[hyponym]) + 1
+
+    rows = []
+
+    for n, hyponym in enumerate(lexicon):
+        hypernyms = top(isas[hyponym], args.k) if hyponym in isas else []
 
         while len(hypernyms) < args.k:
             hypernyms.append(None)
 
         for hypernym in hypernyms:
             genitive = '_'.join([inflect(word) for word in hypernym.split('_')]) if args.inflection and hypernym else hypernym
-            writer.writerow((resource, hyponym, int(not not hypernym), hypernym, genitive, freq[hyponym], n))
+            rows.append((path, hyponym, int(not not hypernym), hypernym, genitive, freq[hyponym], n))
+
+    return rows
+
+writer = csv.writer(sys.stdout, delimiter='\t')
+writer.writerow(('path', 'hyponym', 'found', 'hypernym', 'genitive', 'freq', 'n'))
+
+with concurrent.futures.ProcessPoolExecutor() as executor:
+    futures = (executor.submit(emit, path) for path in args.path)
+
+    for future in concurrent.futures.as_completed(futures):
+        for row in future.result():
+            writer.writerow(row)
