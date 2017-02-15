@@ -16,15 +16,9 @@ writer.writeheader()
 
 reader = csv.DictReader(sys.stdin, delimiter='\t', quoting=csv.QUOTE_NONE)
 
-rows = []
+rows = sorted([row for row in reader if row['found'] != '0'], key=KEY)
 
-for row in reader:
-    if row['found'] == '0':
-        writer.writerow(row)
-    else:
-        rows.append(row)
-
-for _, group in itertools.groupby(sorted(rows, key=KEY), key=KEY):
+for _, group in itertools.groupby(rows, key=KEY):
     group = list(group)
     hypernyms = sorted({row['hypernym'] for row in group})
     group[0]['hypernym'] = ', '.join(hypernyms)
