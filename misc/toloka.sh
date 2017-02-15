@@ -17,8 +17,8 @@ watset-cw-nolog-mcl-joint-exp-tfidf-isas.txt \
 watset-cw-nolog-mcl-joint-tfidf-isas.txt"
 
 SKIP=0
-STEP=10
-WORDS=100
+STEP=100
+WORDS=300
 
 TRAIN_SEED=1337
 TRAIN_SKIP=300
