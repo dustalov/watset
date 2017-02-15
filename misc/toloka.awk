@@ -7,22 +7,6 @@ NR == 1 {
     for (i=1; i<=NF; i++) ix[$i] = i;
     next;
 }
-!$ix["found"] {
-    next;
-}
-{
-    hypernyms[$ix["hypernym"] OFS $ix["genitive"]];
-}
-$ix["hyponym"] != hyponym {
-    for (hypernym_genitive in hypernyms) {
-        print $ix["hyponym"], hypernym_genitive, "", "";
-    }
-
-    hyponym = $ix["hyponym"];
-    delete hypernyms;
-}
-END {
-    for (hypernym_genitive in hypernyms) {
-        print $ix["hyponym"], hypernym_genitive, "", "";
-    }
+$ix["found"] {
+    print $ix["hyponym"], $ix["hypernym"], $ix["genitive"], "", "" | "sort -t \"\t\" -k1,1 -k2,2 -k3,3 -u";
 }

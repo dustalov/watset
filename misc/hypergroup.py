@@ -7,14 +7,14 @@ import csv
 import sys
 import itertools
 
-FIELDS = ('resource', 'hyponym', 'found', 'hypernym', 'genitive', 'freq', 'n')
+FIELDS = ('hyponym', 'found', 'hypernym', 'genitive', 'freq', 'n')
 
-KEY = lambda x: (x['hyponym'], x['genitive'])
-
-writer = csv.DictWriter(sys.stdout, delimiter='\t', fieldnames=FIELDS)
+writer = csv.DictWriter(sys.stdout, delimiter='\t', fieldnames=FIELDS, extrasaction='ignore')
 writer.writeheader()
 
 reader = csv.DictReader(sys.stdin, delimiter='\t', quoting=csv.QUOTE_NONE)
+
+KEY = lambda x: (x['hyponym'], x['genitive'])
 
 rows = sorted([row for row in reader if row['found'] != '0'], key=KEY)
 
