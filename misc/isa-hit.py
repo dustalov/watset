@@ -71,12 +71,7 @@ def inflect(word):
     if not parses:
         return word + suffix
 
-    candidates = [p for p in parses if {'NOUN'} in p.tag]
-
-    if not candidates:
-        candidates = parses
-
-    match = max(parses, key=lambda p: p.score)
+    match = max(parses, key=lambda p: p.score + int('NOUN' in p.tag) * 10 + int('nomn' in p.tag) * 2)
 
     inflection = match.inflect({'gent'})
 
