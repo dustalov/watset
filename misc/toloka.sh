@@ -50,8 +50,7 @@ cat <(head -1   isa-$TRAIN_HITS-skip-$TRAIN_SKIP-hit.tsv) \
     <(tail -n+2 isa-$TRAIN_HITS-skip-$TRAIN_SKIP-hit.tsv |
       awk -F '\t' '!!$3' | sort |
       shuf --random-source=<(openssl enc -aes-256-ctr -pass "pass:$TRAIN_SEED" -nosalt </dev/zero 2>/dev/null) |
-      head "-$TRAIN_HITS" |
-      sort -t $'\t' -k2 -k5) >isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
+      head "-$TRAIN_HITS") >isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
 
 ./hypergroup.py < isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv > hg-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
 
