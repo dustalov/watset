@@ -63,7 +63,7 @@ def inflect(word):
     if not word:
         return word
 
-    suffix = ',' if word[-1] in {',', ')'} else ''
+    suffix = word[-1] if word[-1] in {',', ')'} else ''
     word = word.rstrip(suffix)
 
     parses = morph.parse(word)
