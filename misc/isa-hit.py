@@ -82,9 +82,6 @@ def inflect(word):
 
     return (inflection.word if inflection else word) + suffix
 
-# import IPython; IPython.embed()
-# sys.exit(0)
-
 writer = csv.writer(sys.stdout, delimiter='\t')
 writer.writerow(('resource', 'hyponym', 'found', 'hypernym', 'genitive', 'freq', 'n'))
 
@@ -98,21 +95,3 @@ for n, hyponym in enumerate(lexicon):
         for hypernym in hypernyms:
             genitive = '_'.join([inflect(word) for word in hypernym.split('_')]) if args.inflection and hypernym else hypernym
             writer.writerow((resource, hyponym, int(not not hypernym), hypernym, genitive, freq[hyponym], n))
-
-sys.exit(0)
-
-pairs = defaultdict(lambda: set())
-
-for hyponym in lexicon:
-    for G in resources.values():
-        if hyponym in G:
-            pairs[hyponym].update(top(G[hyponym], args.k))
-
-writer = csv.writer(sys.stdout, delimiter='\t')
-writer.writerow(('INPUT:hyponym', 'INPUT:hypernym', 'GOLDEN:judgement', 'HINT:text'))
-
-for hyponym in lexicon:
-    for hypernym in pairs[hyponym]:
-        writer.writerow((hyponym, hypernym))
-
-# import IPython; IPython.embed()
