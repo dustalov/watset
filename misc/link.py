@@ -1,22 +1,24 @@
 #!/usr/bin/env python
 
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE, SIG_DFL)
-
 import argparse
 import csv
 import sys
 import itertools
 from collections import defaultdict, Counter
-from math import log2
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.preprocessing import Binarizer
+from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 import concurrent.futures
 
+from signal import signal, SIGINT
+signal(SIGINT, lambda signum, frame: sys.exit(1))
+
 WEIGHT = {
-    'tf': lambda w, words: float(Counter(words)[w]),
-    'idf': lambda w, words: idf.get(w, 1.),
-    'tfidf': lambda w, words: float(Counter(words)[w]) * idf.get(w, 1.)
+    'tf':    TfidfTransformer(use_idf=False),
+    'idf':   Pipeline([('binary', Binarizer()), ('idf', TfidfTransformer())]),
+    'tfidf': TfidfTransformer()
 }
 
 parser = argparse.ArgumentParser()
@@ -50,34 +52,15 @@ with args.isas as f:
         if len(row) > 1 and row[0] in lexicon and row[1] in lexicon:
             isas[row[0]].add(row[1])
 
-idf, D = defaultdict(lambda: 0), .0
-
-for words in synsets.values():
-    hypernyms = [isas[word] for word in words if word in isas]
-
-    if not hypernyms:
-        continue
-
-    for hypernym in set.union(*hypernyms):
-        idf[hypernym] += 1
-
-    D += 1
-
-idf = {hypernym: log2(D / df) for hypernym, df in idf.items()}
-
-weight = WEIGHT[args.weight]
-
 hctx = {}
 
 for id, words in synsets.items():
-    hypernyms = list(itertools.chain(*(isas[word] for word in words if word in isas)))
+    hypernyms = Counter(itertools.chain(*(isas[word] for word in words if word in isas)))
 
-    if not hypernyms:
-        continue
+    if hypernyms:
+        hctx[id] = hypernyms
 
-    hctx[id] = {word: weight(word, hypernyms) for word in hypernyms}
-
-v = DictVectorizer().fit(hctx.values())
+v = Pipeline([('dict', DictVectorizer()), (args.weight, WEIGHT[args.weight])]).fit(hctx.values())
 
 def emit(id):
     if not id in hctx:
@@ -86,7 +69,7 @@ def emit(id):
     hvector, candidates = v.transform(hctx[id]), Counter()
 
     for hypernym in hctx[id]:
-        hsenses = Counter({hid: sim(v.transform({word: weight(word, synsets[hid]) for word in synsets[hid]}), hvector).item(0) for hid in index[hypernym]})
+        hsenses = Counter({hid: sim(v.transform(Counter(synsets[hid])), hvector).item(0) for hid in index[hypernym]})
 
         for hid, cosine in hsenses.most_common(1):
             if cosine > 0:
