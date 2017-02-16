@@ -31,7 +31,7 @@ for line in sys.stdin:
             bigrams[word2][word1] += 1
 
 clusters = {}
-index = defaultdict(lambda: set())
+index = defaultdict(set)
 
 for id, word in enumerate(unigrams):
     clusters[id] = {word}

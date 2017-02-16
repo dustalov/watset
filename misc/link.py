@@ -28,7 +28,7 @@ parser.add_argument('--weight', choices=WEIGHT.keys(), default='tfidf')
 parser.add_argument('-k', nargs='?', type=int, default=6)
 args = parser.parse_args()
 
-synsets, index, lexicon = {}, defaultdict(lambda: list()), set()
+synsets, index, lexicon = {}, defaultdict(list), set()
 
 with args.synsets as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
@@ -43,7 +43,7 @@ with args.synsets as f:
 
 index = {word: {id: i + 1 for i, id in enumerate(ids)} for word, ids in index.items()}
 
-isas = defaultdict(lambda: set())
+isas = defaultdict(set)
 
 with args.isas as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)

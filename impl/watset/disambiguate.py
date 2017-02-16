@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('wsi', type=argparse.FileType('r'))
 args = parser.parse_args()
 
-wsi = defaultdict(lambda: dict())
+wsi = defaultdict(dict)
 D   = []
 
 with args.wsi as f:
