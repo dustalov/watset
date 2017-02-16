@@ -14,7 +14,7 @@ signal(SIGINT, lambda signum, frame: sys.exit(1))
 parser = argparse.ArgumentParser()
 parser.add_argument('--freq', required=True, type=argparse.FileType('r'))
 parser.add_argument('-n', nargs='?', type=int, default=300)
-parser.add_argument('-k', nargs='?', type=int, default=3)
+parser.add_argument('-k', nargs='?', type=int, default=5)
 parser.add_argument('--skip', nargs='?', type=int, default=0)
 parser.add_argument('--no-inflection', dest='inflection', action='store_false')
 parser.add_argument('path', nargs='+')
@@ -54,7 +54,7 @@ def inflect(word):
     return (inflection.word if inflection else word) + suffix
 
 def emit(path):
-    isas = defaultdict(lambda: dict())
+    isas = defaultdict(dict)
 
     with open(path, newline='') as f:
         reader = csv.reader(f, delimiter='\t')
