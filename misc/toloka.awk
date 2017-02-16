@@ -5,6 +5,12 @@ BEGIN {
 }
 FNR == 1 {
     for (i=1; i<=NF; i++) ix[$i] = i;
+
+    if (!("hyponym" in ix) || !("hypernym" in ix) || !("genitive" in ix)) {
+        print "Invalid format." > "/dev/stderr";
+        exit(1);
+    }
+
     next;
 }
 {

@@ -26,32 +26,32 @@ TRAIN_HITS=50
 
 # Actual HIT
 
-./isa-hit.py --freq=freqrnc2012.csv --skip=$SKIP -n=$WORDS $ISAS > isa-$WORDS-hit.tsv
+./freqrncs.py --freq=freqrnc2012.csv --skip=$SKIP -n=$WORDS $ISAS > isa-$WORDS-hit.tsv
 
-./hypergroup.py < isa-$WORDS-hit.tsv > hg-isa-$WORDS-hit.tsv
+./genitives.py < isa-$WORDS-hit.tsv > gent-isa-$WORDS-hit.tsv
 
-./toloka.awk hg-isa-$WORDS-hit.tsv > toloka-isa-$WORDS-hit.tsv
+./toloka.awk gent-isa-$WORDS-hit.tsv > toloka-isa-$WORDS-hit.tsv
 
 for i in $(seq $STEP $STEP $WORDS); do
   OFFSET=$((SKIP+i-STEP))
 
-  ./isa-hit.py --freq=freqrnc2012.csv --skip=$OFFSET -n=$STEP $ISAS > isa-$WORDS-pool-$i-hit.tsv
+  ./freqrncs.py --freq=freqrnc2012.csv --skip=$OFFSET -n=$STEP $ISAS > isa-$WORDS-pool-$i-hit.tsv
 
-  ./hypergroup.py < isa-$WORDS-pool-$i-hit.tsv > hg-isa-$WORDS-pool-$i-hit.tsv
+  ./genitives.py < isa-$WORDS-pool-$i-hit.tsv > gent-isa-$WORDS-pool-$i-hit.tsv
 
-  ./toloka.awk hg-isa-$WORDS-pool-$i-hit.tsv > toloka-isa-$WORDS-pool-$i-hit.tsv
+  ./toloka.awk gent-isa-$WORDS-pool-$i-hit.tsv > toloka-isa-$WORDS-pool-$i-hit.tsv
 done
 
-# Training HIT
+md5sum <(./toloka.awk gent-isa-$WORDS-pool-*-hit.tsv) toloka-isa-$WORDS-hit.tsv
 
-./isa-hit.py --freq=freqrnc2012.csv --skip=$TRAIN_SKIP -n=$TRAIN_HITS $ISAS > isa-$TRAIN_HITS-skip-$TRAIN_SKIP-hit.tsv
+Training HIT
 
-cat <(head -1   isa-$TRAIN_HITS-skip-$TRAIN_SKIP-hit.tsv) \
-    <(tail -n+2 isa-$TRAIN_HITS-skip-$TRAIN_SKIP-hit.tsv |
-      awk -F '\t' '!!$3' | sort |
+./freqrncs.py --freq=freqrnc2012.csv --skip=$TRAIN_SKIP -n=$TRAIN_HITS $ISAS > isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
+
+./genitives.py < isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv > gent-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
+
+cat <(head -1   gent-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv) \
+    <(tail -n+2 gent-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv |
       shuf --random-source=<(openssl enc -aes-256-ctr -pass "pass:$TRAIN_SEED" -nosalt </dev/zero 2>/dev/null) |
-      head "-$TRAIN_HITS") >isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
-
-./hypergroup.py < isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv > hg-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
-
-./toloka.awk hg-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv > toloka-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
+      head "-$TRAIN_HITS") |
+./toloka.awk > toloka-isa-$TRAIN_HITS-skip-$TRAIN_SKIP-train-hit.tsv
