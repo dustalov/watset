@@ -49,10 +49,10 @@ lexicon = sorted(lexicon)
 def wordwise(resource, word):
     pairs = [pair for pair in union if pair[0] == word or pair[1] == word]
 
-    true  = [int(pair in resource) for pair in pairs]
-    pred  = [int(pair in gold)     for pair in pairs]
+    wtrue = [int(pair in resource) for pair in pairs]
+    wpred = [int(pair in gold)     for pair in pairs]
 
-    return (true, pred)
+    return (wtrue, wpred)
 
 def evaluate(path):
     scores = OrderedDict((word, metric_score(*wordwise(resources[path], word))) for word in lexicon) if metric_score is not None else {}
