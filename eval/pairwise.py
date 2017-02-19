@@ -101,5 +101,5 @@ for path, values in results.items():
         str(values['precision']),
         str(values['recall']),
         str(values['f1']),
-        str(values.get('sign', 'e'))
+        str(values.get('sign', int(False)))
     )))
