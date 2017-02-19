@@ -80,7 +80,7 @@ with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
 if metric_score is not None:
-    results = OrderedDict(item for item in sorted(results.items(), key=lambda x: x[1][args.significance], reverse=True))
+    results = OrderedDict(item for item in sorted(results.items(), key=lambda item: item[1][args.significance], reverse=True))
 
     def pairwise(iterable):
         a, b = itertools.tee(iterable)
