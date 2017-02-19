@@ -37,11 +37,10 @@ lexicon = words(gold) & set.union(*(words(pairs) for pairs in resources.values()
 union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
 true  = [int(pair in gold) for pair in union]
 
-def tables(pairs):
-    pred = [int(pair in pairs) for pair in union]
-    return (true, pred)
+def evaluate(path):
+    true = [int(pair in gold)            for pair in union]
+    pred = [int(pair in resources[path]) for pair in union]
 
-def scores(true, pred):
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
 
     return {
@@ -53,9 +52,6 @@ def scores(true, pred):
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred)
     }
-
-def evaluate(path):
-    return scores(*tables(resources[path]))
 
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
