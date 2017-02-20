@@ -15,12 +15,12 @@ signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--sample', required=True, type=argparse.FileType('r'))
-parser.add_argument('--significance', nargs='?', choices=('false', 'precision', 'recall', 'f1'), default='false')
+parser.add_argument('--significance', action='store_true')
 parser.add_argument('--alpha', nargs='?', type=float, default=0.01)
 parser.add_argument('path', nargs='+', type=argparse.FileType('r'))
 args = parser.parse_args()
 
-metric_score = None if args.significance == 'false' else globals()[args.significance + '_score']
+METRICS = {metric: globals()[metric + '_score'] for metric in ('precision', 'recall', 'f1')}
 
 gold = defaultdict(lambda: False)
 
@@ -52,14 +52,20 @@ lexicon = sorted({hyponym for pairs in resources.values() for hyponym, _ in pair
 def wordwise(resource, word):
     pairs = [pair for pair in resource if pair[0] == word]
 
-    true = [int(pair[1] is None or gold[pair]) for pair in pairs]
-    pred = [int(pair[1] is not None)           for pair in pairs]
+    word_true = [int(pair[1] is None or gold[pair]) for pair in pairs]
+    word_pred = [int(pair[1] is not None)           for pair in pairs]
 
-    return (true, pred)
+    return (word_true, word_pred)
+
+def scores(resource):
+    if not args.significance:
+        return
+
+    labels = [wordwise(resource, word) for word in lexicon]
+
+    return {metric: [score(*true_pred) for true_pred in labels] for metric, score in METRICS.items()}
 
 def evaluate(path):
-    scores = OrderedDict((word, metric_score(*wordwise(resources[path], word))) for word in lexicon) if metric_score is not None else {}
-
     true = [int(pair[1] is None or gold[pair]) for pair in resources[path]]
     pred = [int(pair[1] is not None)           for pair in resources[path]]
 
@@ -73,25 +79,32 @@ def evaluate(path):
         'precision': precision_score(true, pred),
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred),
-        'scores':    scores
+        'scores':    scores(resources[path]),
+        'rank':      {}
     }
 
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
-if metric_score is not None:
-    results = OrderedDict(item for item in sorted(results.items(), key=lambda item: item[1][args.significance], reverse=True))
-
+if args.significance:
     def pairwise(iterable):
         a, b = itertools.tee(iterable)
         next(b, None)
         return zip(a, b)
 
-    for (x_path, x_result), (_, y_result) in pairwise(results.items()):
-        x, y = list(x_result['scores'].values()), list(y_result['scores'].values())
-        results[x_path]['sign'] = int(wilcoxon(x, y).pvalue < args.alpha)
+    for metric in METRICS:
+        desc, rank = sorted(results.items(), key=lambda item: item[1][metric], reverse=True), 1
 
-print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'sign')))
+        for (path1, results1), (path2, results2) in pairwise(desc):
+            x, y = list(results1['scores'][metric]), list(results2['scores'][metric])
+
+            results[path1]['rank'][metric] = rank
+
+            rank += int(wilcoxon(x, y).pvalue < args.alpha)
+
+            results[path2]['rank'][metric] = rank
+
+print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
 
 for path, values in results.items():
     print('\t'.join((
@@ -104,5 +117,7 @@ for path, values in results.items():
         str(values['precision']),
         str(values['recall']),
         str(values['f1']),
-        str(values.get('sign', int(False)))
+        str(values['rank'].get('precision', 0)),
+        str(values['rank'].get('recall',    0)),
+        str(values['rank'].get('f1',        0))
     )))
