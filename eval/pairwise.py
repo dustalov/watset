@@ -58,7 +58,7 @@ def wordwise(resource, word):
 
     return (word_true, word_pred)
 
-def scores(resource, ):
+def scores(resource):
     if not args.significance:
         return
 
