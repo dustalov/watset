@@ -5,7 +5,7 @@ import csv
 import itertools
 from concurrent.futures import ProcessPoolExecutor
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 from scipy.stats import wilcoxon
 
 parser = argparse.ArgumentParser()
@@ -46,18 +46,21 @@ true  = [int(pair in gold) for pair in union]
 
 lexicon = sorted(lexicon)
 
-def wordwise(resource, word):
-    pairs = [pair for pair in union if pair[0] == word or pair[1] == word]
+index = defaultdict(list)
 
-    wtrue = [int(pair in resource) for pair in pairs]
-    wpred = [int(pair in gold)     for pair in pairs]
+for pair in union:
+    for word in pair:
+        index[word].append(pair)
+
+def wordwise(resource, word):
+    wtrue = [int(pair in resource) for pair in index[word]]
+    wpred = [int(pair in gold)     for pair in index[word]]
 
     return (wtrue, wpred)
 
 def evaluate(path):
     scores = OrderedDict((word, metric_score(*wordwise(resources[path], word))) for word in lexicon) if metric_score is not None else {}
 
-    true = [int(pair in gold)            for pair in union]
     pred = [int(pair in resources[path]) for pair in union]
 
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
