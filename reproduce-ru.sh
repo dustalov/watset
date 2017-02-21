@@ -34,8 +34,8 @@ rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/ru/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/w2v
 
-eval/pairwise.py --gold=data/ru/ruthes-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
-eval/pairwise.py --gold=data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k9r | column -t
+eval/pairwise.py --significance --gold=data/ru/ruthes-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
+eval/pairwise.py --significance --gold=data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k9r | column -t
 
 eval/cluster.sh data/ru/ruthes-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-ruthes.tsv | column -t
 eval/cluster.sh data/ru/yarn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
