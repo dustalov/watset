@@ -2,7 +2,7 @@
 
 import argparse
 import csv
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 import operator
 import sys

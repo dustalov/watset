@@ -5,7 +5,7 @@ import csv
 import itertools
 from concurrent.futures import ProcessPoolExecutor
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
-from collections import defaultdict, OrderedDict
+from collections import defaultdict
 from scipy.stats import wilcoxon
 
 parser = argparse.ArgumentParser()
