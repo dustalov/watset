@@ -47,8 +47,7 @@ true  = [int(nx.has_path(gold, *pair)) for pair in union]
 index = defaultdict(list)
 
 for pair in union:
-    for word in pair:
-        index[word].append(pair)
+    index[pair[0]].append(pair)
 
 def wordwise(G, word):
     word_true = [int(nx.has_path(gold, *pair))                                for pair in index[word]]
@@ -60,7 +59,7 @@ def scores(G):
     if not args.significance:
         return
 
-    labels = [wordwise(G, word) for word in lexicon]
+    labels = [wordwise(G, word) for word in index]
 
     return {metric: [score(*true_pred) for true_pred in labels] for metric, score in METRICS.items()}
 
