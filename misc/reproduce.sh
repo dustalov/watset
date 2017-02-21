@@ -19,4 +19,4 @@ done
 done
 done
 
-./evaluate.py --gold=ruthes-isas.txt patterns{,-filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt $EVALUATE | tee pairwise-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
+./evaluate.py --significance --gold=ruthes-isas.txt patterns{,-filter-exp}-isas.txt {patterns-limit,wiktionary,mas,joint}{,-exp}-isas.txt $EVALUATE | tee pairwise-ruthes.tsv | sort -t $'\t' -g -k9r | column -t
