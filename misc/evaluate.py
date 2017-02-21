@@ -49,9 +49,11 @@ index = defaultdict(list)
 for pair in union:
     index[pair[0]].append(pair)
 
-def wordwise(G, word):
-    word_true = [int(nx.has_path(gold, *pair))                                for pair in index[word]]
-    word_pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in index[word]]
+hyponyms = sorted(index)
+
+def wordwise(G, pairs):
+    word_true = [int(nx.has_path(gold, *pair))                                for pair in pairs]
+    word_pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in pairs]
 
     return (word_true, word_pred)
 
@@ -59,7 +61,7 @@ def scores(G):
     if not args.significance:
         return
 
-    labels = [wordwise(G, word) for word in index]
+    labels = [wordwise(G, index[word]) for word in hyponyms]
 
     return {metric: [score(*true_pred) for true_pred in labels] for metric, score in METRICS.items()}
 
