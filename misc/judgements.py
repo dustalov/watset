@@ -79,30 +79,38 @@ def evaluate(path):
         'precision': precision_score(true, pred),
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred),
-        'scores':    scores(resources[path]),
-        'rank':      {}
+        'scores':    scores(resources[path])
     }
 
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources.keys()))}
 
-if args.significance:
-    def pairwise(iterable):
-        a, b = itertools.tee(iterable)
-        next(b, None)
-        return zip(a, b)
+def pairwise(iterable):
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
-    for metric in METRICS:
-        desc, rank = sorted(results.items(), key=lambda item: item[1][metric], reverse=True), 1
+def significance(metric):
+    if not args.significance:
+        return {}
 
-        for (path1, results1), (path2, results2) in pairwise(desc):
-            x, y = list(results1['scores'][metric]), list(results2['scores'][metric])
+    desc, rank = sorted(results.items(), key=lambda item: item[1][metric], reverse=True), 1
 
-            results[path1]['rank'][metric] = rank
+    ranks = {}
 
-            rank += int(wilcoxon(x, y).pvalue < args.alpha)
+    for (path1, results1), (path2, results2) in pairwise(desc):
+        x, y = list(results1['scores'][metric]), list(results2['scores'][metric])
 
-            results[path2]['rank'][metric] = rank
+        ranks[path1] = rank
+
+        rank += int(wilcoxon(x, y).pvalue < args.alpha)
+
+        ranks[path2] = rank
+
+    return ranks
+
+with ProcessPoolExecutor() as executor:
+    ranks = {metric: result for metric, result in zip(METRICS, executor.map(significance, METRICS))}
 
 print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
 
@@ -117,7 +125,7 @@ for path, values in results.items():
         str(values['precision']),
         str(values['recall']),
         str(values['f1']),
-        str(values['rank'].get('precision', 0)),
-        str(values['rank'].get('recall',    0)),
-        str(values['rank'].get('f1',        0))
+        str(ranks['precision'].get(path, 0)),
+        str(ranks['recall'   ].get(path, 0)),
+        str(ranks['f1'       ].get(path, 0))
     )))
