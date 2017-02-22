@@ -25,7 +25,8 @@ BEGIN {
 
     if (nsenses == 0 || nisas == 0) next;
 
-    print ":c" $1, TYPE, CONCEPT, ".";
+    print "<urn:linked:c" $1 ">", TYPE,  CONCEPT,           ".";
+    print "<urn:linked:c" $1 ">", LABEL, "\"synset" $1 "\"", ".";
 
     for (sense_id in senses) {
         sense = senses[sense_id];
@@ -42,20 +43,20 @@ BEGIN {
             if (!(word in windex)) {
                 windex[word] = wcount++;
 
-                print ":w" windex[word], TYPE,          WORD,              ".";
-                print ":w" windex[word], LABEL,         "\"" word "\"",    ".";
-                print ":f" windex[word], TYPE,          FORM,              ".";
-                print ":f" windex[word], LABEL,         "\"" word "\"",    ".";
-                print ":f" windex[word], WRITTENREP,    "\"" word "\"",    ".";
-                print ":w" windex[word], CANONICALFORM, ":f" windex[word], ".";
+                print "<urn:linked:w" windex[word] ">", TYPE,          WORD,                             ".";
+                print "<urn:linked:w" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
+                print "<urn:linked:f" windex[word] ">", TYPE,          FORM,                             ".";
+                print "<urn:linked:f" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
+                print "<urn:linked:f" windex[word] ">", WRITTENREP,    "\"" word "\"",                   ".";
+                print "<urn:linked:w" windex[word] ">", CANONICALFORM, "<urn:linked:f" windex[word] ">", ".";
             }
 
-            print ":s" sindex[sense], TYPE,          LEXICALSENSE,       ".";
-            print ":s" sindex[sense], LABEL,         "\"" sense "\"",    ".";
-            print ":s" sindex[sense], ISSENSEOF,     ":w" windex[word],  ".";
-            print ":w" windex[word],  SENSE,         ":s" sindex[sense], ".";
-            print ":s" sindex[sense], REFERENCE,     ":c" $1,            ".";
-            print ":c" $1,            ISREFERENCEOF, ":s" sindex[sense], ".";
+            print "<urn:linked:s" sindex[sense] ">", TYPE,          LEXICALSENSE,       ".";
+            print "<urn:linked:s" sindex[sense] ">", LABEL,         "\"" sense "\"",    ".";
+            print "<urn:linked:s" sindex[sense] ">", ISSENSEOF,     "<urn:linked:w" windex[word] ">",  ".";
+            print "<urn:linked:w" windex[word] ">",  SENSE,         "<urn:linked:s" sindex[sense] ">", ".";
+            print "<urn:linked:s" sindex[sense] ">", REFERENCE,     "<urn:linked:c" $1 ">",            ".";
+            print "<urn:linked:c" $1 ">",            ISREFERENCEOF, "<urn:linked:s" sindex[sense] ">", ".";
         }
 
         for (isa_id in isas) {
@@ -73,22 +74,22 @@ BEGIN {
                 if (!(word in windex)) {
                     windex[word] = wcount++;
 
-                    print ":w" windex[word], TYPE,          WORD,              ".";
-                    print ":w" windex[word], LABEL,         "\"" word "\"",    ".";
-                    print ":f" windex[word], TYPE,          FORM,              ".";
-                    print ":f" windex[word], LABEL,         "\"" word "\"",    ".";
-                    print ":f" windex[word], WRITTENREP,    "\"" word "\"",    ".";
-                    print ":w" windex[word], CANONICALFORM, ":f" windex[word], ".";
+                    print "<urn:linked:w" windex[word] ">", TYPE,          WORD,              ".";
+                    print "<urn:linked:w" windex[word] ">", LABEL,         "\"" word "\"",    ".";
+                    print "<urn:linked:f" windex[word] ">", TYPE,          FORM,              ".";
+                    print "<urn:linked:f" windex[word] ">", LABEL,         "\"" word "\"",    ".";
+                    print "<urn:linked:f" windex[word] ">", WRITTENREP,    "\"" word "\"",    ".";
+                    print "<urn:linked:w" windex[word] ">", CANONICALFORM, "<urn:linked:f" windex[word] ">", ".";
                 }
 
-                print ":s" sindex[isa],  TYPE,      LEXICALSENSE,      ".";
-                print ":s" sindex[isa],  LABEL,     "\"" isa "\"",     ".";
-                print ":s" sindex[isa],  ISSENSEOF, ":w" windex[word], ".";
-                print ":w" windex[word], SENSE,     ":s" sindex[isa],  ".";
+                print "<urn:linked:s" sindex[isa] ">",  TYPE,      LEXICALSENSE,      ".";
+                print "<urn:linked:s" sindex[isa] ">",  LABEL,     "\"" isa "\"",     ".";
+                print "<urn:linked:s" sindex[isa] ">",  ISSENSEOF, "<urn:linked:w" windex[word] ">", ".";
+                print "<urn:linked:w" windex[word] ">", SENSE,     "<urn:linked:s" sindex[isa] ">",  ".";
             }
 
-            print ":s" sindex[sense], BROADER,  ":s" sindex[isa],   ".";
-            print ":s" sindex[isa],   NARROWER, ":s" sindex[sense], ".";
+            print "<urn:linked:s" sindex[sense] ">", BROADER,  "<urn:linked:s" sindex[isa] ">",   ".";
+            print "<urn:linked:s" sindex[isa] ">",   NARROWER, "<urn:linked:s" sindex[sense] ">", ".";
         }
     }
 }
