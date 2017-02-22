@@ -2,6 +2,8 @@
 BEGIN {
     FS = "\t";
 
+    URN           = "urn:swn:";
+
     LABEL         = "<http://www.w3.org/2000/01/rdf-schema#label>";
     TYPE          = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>";
 
@@ -25,8 +27,8 @@ BEGIN {
 
     if (nsenses == 0 || nisas == 0) next;
 
-    print "<urn:linked:c" $1 ">", TYPE,  CONCEPT,           ".";
-    print "<urn:linked:c" $1 ">", LABEL, "\"synset" $1 "\"", ".";
+    print "<" URN "c" $1 ">", TYPE,  CONCEPT,            ".";
+    print "<" URN "c" $1 ">", LABEL, "\"synset" $1 "\"", ".";
 
     for (sense_id in senses) {
         sense = senses[sense_id];
@@ -43,20 +45,20 @@ BEGIN {
             if (!(word in windex)) {
                 windex[word] = wcount++;
 
-                print "<urn:linked:w" windex[word] ">", TYPE,          WORD,                             ".";
-                print "<urn:linked:w" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
-                print "<urn:linked:f" windex[word] ">", TYPE,          FORM,                             ".";
-                print "<urn:linked:f" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
-                print "<urn:linked:f" windex[word] ">", WRITTENREP,    "\"" word "\"",                   ".";
-                print "<urn:linked:w" windex[word] ">", CANONICALFORM, "<urn:linked:f" windex[word] ">", ".";
+                print "<" URN "w" windex[word] ">", TYPE,          WORD,                             ".";
+                print "<" URN "w" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
+                print "<" URN "f" windex[word] ">", TYPE,          FORM,                             ".";
+                print "<" URN "f" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
+                print "<" URN "f" windex[word] ">", WRITTENREP,    "\"" word "\"",                   ".";
+                print "<" URN "w" windex[word] ">", CANONICALFORM, "<" URN "f" windex[word] ">",     ".";
             }
 
-            print "<urn:linked:s" sindex[sense] ">", TYPE,          LEXICALSENSE,       ".";
-            print "<urn:linked:s" sindex[sense] ">", LABEL,         "\"" sense "\"",    ".";
-            print "<urn:linked:s" sindex[sense] ">", ISSENSEOF,     "<urn:linked:w" windex[word] ">",  ".";
-            print "<urn:linked:w" windex[word] ">",  SENSE,         "<urn:linked:s" sindex[sense] ">", ".";
-            print "<urn:linked:s" sindex[sense] ">", REFERENCE,     "<urn:linked:c" $1 ">",            ".";
-            print "<urn:linked:c" $1 ">",            ISREFERENCEOF, "<urn:linked:s" sindex[sense] ">", ".";
+            print "<" URN "s" sindex[sense] ">", TYPE,          LEXICALSENSE,                  ".";
+            print "<" URN "s" sindex[sense] ">", LABEL,         "\"" sense "\"",               ".";
+            print "<" URN "s" sindex[sense] ">", ISSENSEOF,     "<" URN "w" windex[word] ">",  ".";
+            print "<" URN "w" windex[word]  ">", SENSE,         "<" URN "s" sindex[sense] ">", ".";
+            print "<" URN "s" sindex[sense] ">", REFERENCE,     "<" URN "c" $1 ">",            ".";
+            print "<" URN "c" $1 ">",            ISREFERENCEOF, "<" URN "s" sindex[sense] ">", ".";
         }
 
         for (isa_id in isas) {
@@ -74,22 +76,22 @@ BEGIN {
                 if (!(word in windex)) {
                     windex[word] = wcount++;
 
-                    print "<urn:linked:w" windex[word] ">", TYPE,          WORD,              ".";
-                    print "<urn:linked:w" windex[word] ">", LABEL,         "\"" word "\"",    ".";
-                    print "<urn:linked:f" windex[word] ">", TYPE,          FORM,              ".";
-                    print "<urn:linked:f" windex[word] ">", LABEL,         "\"" word "\"",    ".";
-                    print "<urn:linked:f" windex[word] ">", WRITTENREP,    "\"" word "\"",    ".";
-                    print "<urn:linked:w" windex[word] ">", CANONICALFORM, "<urn:linked:f" windex[word] ">", ".";
+                    print "<" URN "w" windex[word] ">", TYPE,          WORD,                         ".";
+                    print "<" URN "w" windex[word] ">", LABEL,         "\"" word "\"",               ".";
+                    print "<" URN "f" windex[word] ">", TYPE,          FORM,                         ".";
+                    print "<" URN "f" windex[word] ">", LABEL,         "\"" word "\"",               ".";
+                    print "<" URN "f" windex[word] ">", WRITTENREP,    "\"" word "\"",               ".";
+                    print "<" URN "w" windex[word] ">", CANONICALFORM, "<" URN "f" windex[word] ">", ".";
                 }
 
-                print "<urn:linked:s" sindex[isa] ">",  TYPE,      LEXICALSENSE,      ".";
-                print "<urn:linked:s" sindex[isa] ">",  LABEL,     "\"" isa "\"",     ".";
-                print "<urn:linked:s" sindex[isa] ">",  ISSENSEOF, "<urn:linked:w" windex[word] ">", ".";
-                print "<urn:linked:w" windex[word] ">", SENSE,     "<urn:linked:s" sindex[isa] ">",  ".";
+                print "<" URN "s" sindex[isa] ">",  TYPE,      LEXICALSENSE,                 ".";
+                print "<" URN "s" sindex[isa] ">",  LABEL,     "\"" isa "\"",                ".";
+                print "<" URN "s" sindex[isa] ">",  ISSENSEOF, "<" URN "w" windex[word] ">", ".";
+                print "<" URN "w" windex[word] ">", SENSE,     "<" URN "s" sindex[isa] ">",  ".";
             }
 
-            print "<urn:linked:s" sindex[sense] ">", BROADER,  "<urn:linked:s" sindex[isa] ">",   ".";
-            print "<urn:linked:s" sindex[isa] ">",   NARROWER, "<urn:linked:s" sindex[sense] ">", ".";
+            print "<" URN "s" sindex[sense] ">", BROADER,  "<" URN "s" sindex[isa] ">",   ".";
+            print "<" URN "s" sindex[isa] ">",   NARROWER, "<" URN "s" sindex[sense] ">", ".";
         }
     }
 }
