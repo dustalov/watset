@@ -45,12 +45,12 @@ BEGIN {
             if (!(word in windex)) {
                 windex[word] = wcount++;
 
-                print "<" URN "w" windex[word] ">", TYPE,          WORD,                             ".";
-                print "<" URN "w" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
-                print "<" URN "f" windex[word] ">", TYPE,          FORM,                             ".";
-                print "<" URN "f" windex[word] ">", LABEL,         "\"" word "\"",                   ".";
-                print "<" URN "f" windex[word] ">", WRITTENREP,    "\"" word "\"",                   ".";
-                print "<" URN "w" windex[word] ">", CANONICALFORM, "<" URN "f" windex[word] ">",     ".";
+                print "<" URN "w" windex[word] ">", TYPE,          WORD,                         ".";
+                print "<" URN "w" windex[word] ">", LABEL,         "\"" word "\"",               ".";
+                print "<" URN "f" windex[word] ">", TYPE,          FORM,                         ".";
+                print "<" URN "f" windex[word] ">", LABEL,         "\"" word "\"",               ".";
+                print "<" URN "f" windex[word] ">", WRITTENREP,    "\"" word "\"",               ".";
+                print "<" URN "w" windex[word] ">", CANONICALFORM, "<" URN "f" windex[word] ">", ".";
             }
 
             print "<" URN "s" sindex[sense] ">", TYPE,          LEXICALSENSE,                  ".";
