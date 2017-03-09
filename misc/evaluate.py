@@ -39,10 +39,22 @@ with ProcessPoolExecutor() as executor:
 
 gold = resources.pop(args.gold)
 
-lexicon = set(gold.nodes()) & set.union(*(set(G.nodes()) for G in resources.values()))
+senses = defaultdict(list)
 
-union = [pair for pair in set(gold.edges()) | set.union(*(set(G.edges()) for G in resources.values())) if pair[0] in lexicon and pair[1] in lexicon]
-true  = [int(nx.has_path(gold, *pair)) for pair in union]
+for node in gold.nodes():
+    senses[node.rsplit('#', 1)[0]].append(node)
+
+def has_sense_path(G, source, target):
+    for source_sense, target_sense in itertools.product(senses[source], senses[target]):
+        if nx.has_path(G, source_sense, target_sense):
+            return True
+
+    return False
+
+lexicon = senses.keys() & set.union(*(set(G.nodes()) for G in resources.values()))
+
+union = [pair for pair in {(word1.rsplit('#', 1)[0], word2.rsplit('#', 1)[0]) for word1, word2 in gold.edges()} | set.union(*(set(G.edges()) for G in resources.values())) if pair[0] in lexicon and pair[1] in lexicon]
+true  = [int(has_sense_path(gold, *pair)) for pair in union]
 
 index = defaultdict(list)
 
@@ -52,7 +64,7 @@ for pair in union:
 hyponyms = sorted(index)
 
 def wordwise(G, pairs):
-    word_true = [int(nx.has_path(gold, *pair))                                for pair in pairs]
+    word_true = [int(has_sense_path(gold, *pair))                             for pair in pairs]
     word_pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in pairs]
 
     return (word_true, word_pred)
