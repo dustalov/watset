@@ -26,28 +26,44 @@
     <xsl:param name="to"/>
     <!-- concept -> concept -->
     <xsl:value-of select="key('concepts', $from)/name"/>
+    <xsl:text>#</xsl:text>
+    <xsl:value-of select="$from"/>
     <xsl:text>&#9;</xsl:text>
     <xsl:value-of select="key('concepts', $to)/name"/>
+    <xsl:text>#</xsl:text>
+    <xsl:value-of select="$to"/>
     <xsl:text>&#10;</xsl:text>
     <xsl:for-each select="key('synonyms', $from)">
       <xsl:for-each select="key('entries', current()/@entry_id)">
         <xsl:variable name="hyponym" select="name"/>
         <!-- synonyms -> concept -->
         <xsl:value-of select="$hyponym"/>
+        <xsl:text>#</xsl:text>
+        <xsl:value-of select="$from"/>
         <xsl:text>&#9;</xsl:text>
         <xsl:value-of select="key('concepts', $to)/name"/>
+        <xsl:text>#</xsl:text>
+        <xsl:value-of select="$to"/>
         <xsl:text>&#10;</xsl:text>
         <xsl:for-each select="key('synonyms', $to)">
           <xsl:for-each select="key('entries', current()/@entry_id)">
             <!-- concept -> synonyms -->
             <xsl:value-of select="key('concepts', $from)/name"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$from"/>
             <xsl:text>&#9;</xsl:text>
             <xsl:value-of select="name"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$to"/>
             <xsl:text>&#10;</xsl:text>
             <!-- synonyms -> synonyms -->
             <xsl:value-of select="$hyponym"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$from"/>
             <xsl:text>&#9;</xsl:text>
             <xsl:value-of select="name"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="$to"/>
             <xsl:text>&#10;</xsl:text>
           </xsl:for-each>
         </xsl:for-each>
