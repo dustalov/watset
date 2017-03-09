@@ -25,7 +25,7 @@ BEGIN {
     nsenses = split($3, senses, ", ");
     nisas   = split($5, isas,   ", ");
 
-    if (nsenses == 0 || nisas == 0) next;
+    if (nsenses == 0) next;
 
     print "<" URN "c" $1 ">", TYPE,  CONCEPT,            ".";
     print "<" URN "c" $1 ">", LABEL, "\"synset" $1 "\"", ".";
