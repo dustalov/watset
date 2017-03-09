@@ -31,6 +31,13 @@ def isas(path):
             if len(row) > 1 and row[0] and row[1]:
                 G.add_edge(sanitize(row[0]), sanitize(row[1]))
 
+    # Note that we store the sense inventory as an attribute of G.
+    # TODO: nx.DiGraph subclass?
+    G.senses = defaultdict(list)
+
+    for node in G.nodes():
+        G.senses[node.rsplit('#', 1)[0]].append(node)
+
     return G
 
 with ProcessPoolExecutor() as executor:
@@ -39,19 +46,17 @@ with ProcessPoolExecutor() as executor:
 
 gold = resources.pop(args.gold)
 
-senses = defaultdict(list)
-
-for node in gold.nodes():
-    senses[node.rsplit('#', 1)[0]].append(node)
-
 def has_sense_path(G, source, target):
-    for source_sense, target_sense in itertools.product(senses[source], senses[target]):
+    if source not in G.senses or target not in G.senses:
+        return False
+
+    for source_sense, target_sense in itertools.product(G.senses[source], G.senses[target]):
         if nx.has_path(G, source_sense, target_sense):
             return True
 
     return False
 
-lexicon = senses.keys() & set.union(*(set(G.nodes()) for G in resources.values()))
+lexicon = gold.senses.keys() & set.union(*(set(G.senses.keys()) for G in resources.values()))
 
 union = [pair for pair in {(word1.rsplit('#', 1)[0], word2.rsplit('#', 1)[0]) for word1, word2 in gold.edges()} | set.union(*(set(G.edges()) for G in resources.values())) if pair[0] in lexicon and pair[1] in lexicon]
 true  = [int(has_sense_path(gold, *pair)) for pair in union]
@@ -64,8 +69,8 @@ for pair in union:
 hyponyms = sorted(index)
 
 def wordwise(G, pairs):
-    word_true = [int(has_sense_path(gold, *pair))                             for pair in pairs]
-    word_pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in pairs]
+    word_true = [int(has_sense_path(gold, *pair)) for pair in pairs]
+    word_pred = [int(has_sense_path(G, *pair))    for pair in pairs]
 
     return (word_true, word_pred)
 
@@ -80,7 +85,7 @@ def scores(G):
 def evaluate(path):
     G = resources[path]
 
-    pred = [int(pair[0] in G and pair[1] in G and nx.has_path(G, *pair)) for pair in union]
+    pred = [int(has_sense_path(G, *pair)) for pair in union]
 
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
 
