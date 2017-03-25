@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE, SIG_DFL)
-
 import argparse
 import csv
 import sys
@@ -10,6 +7,9 @@ from collections import defaultdict, Counter
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
 import concurrent.futures
+
+from signal import signal, SIGINT
+signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('wsi', type=argparse.FileType('r'))

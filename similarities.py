@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE, SIG_DFL)
-
 import argparse
 import sys
 from gensim.models.word2vec import Word2Vec
 import csv
+
+from signal import signal, SIGINT
+signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--sim', nargs='?', type=float, default=.3)
