@@ -22,7 +22,7 @@ graph: raw
 	@echo "# Generating the word graph."
 	./edges.sh
 
-gold: ruthes yarn
+gold: ruthes rwn yarn
 
 ruthes: ruthes.xml
 	xsltproc ruthes.xsl ruthes.xml | ./ruthes-synsets.awk >ruthes-synsets.tsv
