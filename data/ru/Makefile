@@ -24,11 +24,21 @@ graph: raw
 
 gold: ruthes yarn
 
-ruthes:
-	@echo "# Assuming that you have RuThes in the directory ${CURDIR}/ruthes-v2."
-	./ruthes-stub.awk ruthes-v2/*.xml >ruthes.xml
+ruthes: ruthes.xml
 	xsltproc ruthes.xsl ruthes.xml | ./ruthes-synsets.awk >ruthes-synsets.tsv
 	../../pairs.awk ruthes-synsets.tsv >ruthes-pairs.txt
+
+ruthes.xml:
+	@echo "# Assuming that you have RuThes in the directory ${CURDIR}/ruthes-v2."
+	./ruthes-stub.awk ruthes-v2/*.xml >ruthes.xml
+
+rwn: rwn.xml
+	xsltproc rwn.xsl rwn.xml | ./ruthes-synsets.awk >rwn-synsets.tsv
+	../../pairs.awk rwn-synsets.tsv >rwn-pairs.txt
+
+rwn.xml:
+	@echo "# Assuming that you have RuWordNet in the directory ${CURDIR}/rwn-xml."
+	./ruthes-stub.awk -v TAG=rwn rwn-xml/*.*.xml >rwn.xml
 
 yarn: yarn.xml
 	xsltproc yarn.xsl yarn.xml | ./yarn-synsets.awk -v V=8 >yarn-synsets.tsv

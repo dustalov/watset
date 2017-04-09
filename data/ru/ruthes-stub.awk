@@ -1,10 +1,11 @@
 #!/usr/bin/awk -f
 BEGIN {
-    print "<ruthes>";
+    if (length(TAG) == 0) TAG = "ruthes";
+    print "<" TAG ">";
 }
 {
     print $0;
 }
 END {
-    print "</ruthes>";
+    print "</" TAG ">";
 }
