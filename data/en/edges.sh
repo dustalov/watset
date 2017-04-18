@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 export LANG=en_US.UTF-8 LC_COLLATE=C
-../wiktionary.awk -v RELATION=SYNONYM enwiktionary.tsv |
+../wiktionary.awk -v RELATION=SYNONYM enwiktionary-20170201-unfiltered.tsv |
 sed -e 's/ {2,}//g' |
 sort --parallel=$(nproc) -t $'\t' -S1G -k1 -k2 |
 ../count.awk > edges.count.txt

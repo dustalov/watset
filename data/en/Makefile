@@ -4,10 +4,13 @@ export SHELL:=/bin/bash
 
 all: raw graph gold
 
-raw: enwiktionary.tsv
+raw: enwiktionary-20170201-unfiltered.tsv
 
-enwiktionary.tsv:
-	curl -sL 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201.tsv' -o 'enwiktionary.tsv'
+enwiktionary-20170201.tsv:
+	curl -sLO 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201.tsv'
+
+enwiktionary-20170201-unfiltered.tsv:
+	curl -sLO 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201-unfiltered.tsv'
 
 graph: raw
 	@echo "# Generating the word graph."
