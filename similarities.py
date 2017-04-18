@@ -9,11 +9,11 @@ from signal import signal, SIGINT
 signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--sim', nargs='?', type=float, default=.3)
-parser.add_argument('w2v')
-args = vars(parser.parse_args())
+parser.add_argument('--sim', type=float, default=.3)
+parser.add_argument('w2v', type=argparse.FileType('rb'))
+args = parser.parse_args()
 
-w2v = Word2Vec.load_word2vec_format(args['w2v'], binary=True, unicode_errors='ignore')
+w2v = Word2Vec.load_word2vec_format(args.w2v, binary=True, unicode_errors='ignore')
 w2v.init_sims(replace=True)
 print('Using %d word2vec dimensions from "%s".' % (w2v.layer1_size, sys.argv[1]), file=sys.stderr)
 
@@ -26,8 +26,8 @@ for row in reader:
         similarity = w2v.similarity(word1, word2)
 
         if similarity < 0:
-            similarity = args['sim']
+            similarity = args.sim
     except KeyError:
-        similarity = args['sim']
+        similarity = args.sim
 
     print('%s\t%s\t%f' % (word1, word2, similarity))
