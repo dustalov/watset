@@ -3,11 +3,11 @@
 BEGIN {
     FS = OFS = "\t";
 }
-(!word1 || !word2) {
+NR == 1 {
     word1 = $1;
     word2 = $2;
 }
-(word1 != $1 || word2 != $2) {
+("" word1 != $1) || ("" word2 != $2) {
     print word1, word2, count;
     word1 = $1;
     word2 = $2;
