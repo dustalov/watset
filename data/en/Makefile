@@ -8,7 +8,8 @@ raw: wiktionary
 	sort --parallel=$$(nproc) -t $$'\t' -S1G -k1 -k2 -o pairs.txt wiktionary-pairs.txt
 
 wiktionary: enwiktionary-20170201-unfiltered.tsv
-	../wiktionary.awk -v RELATION=SYNONYM enwiktionary-20170201-unfiltered.tsv | sed -e 's/ {2,}//g' >wiktionary-pairs.txt
+	../wiktionary.awk -v RELATION=SYNONYM enwiktionary-20170201-unfiltered.tsv | \
+	grep -v 'sc=' | egrep '[A-Za-z]' | sed -e 's/ {2,}//g' >wiktionary-pairs.txt
 
 enwiktionary-20170201.tsv:
 	curl -sLO 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201.tsv'

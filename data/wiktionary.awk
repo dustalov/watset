@@ -3,10 +3,6 @@ BEGIN {
     FS = OFS = "\t";
     if (length(RELATION) == 0) exit 1;
 }
-$4 == "HYPONYM" {
-    $4 = $3; $3 = $1; $1 = $4;
-    $4 = "HYPERNYM";
-}
 $4 != toupper(RELATION) { next; }
 $1 != $3 {
     gsub(/"/, "");     # quotes
@@ -37,7 +33,4 @@ $1 != $3 {
 }
 $1 && $3 && $1 != $3 && $4 == "SYNONYM" {
     print $1, $3 ORS $3, $1;
-}
-$1 && $3 && $1 != $3 && $4 == "HYPERNYM" {
-    print $1, $3;
 }
