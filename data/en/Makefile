@@ -4,7 +4,11 @@ export SHELL:=/bin/bash
 
 all: raw graph gold
 
-raw: enwiktionary-20170201-unfiltered.tsv
+raw: wiktionary
+	sort --parallel=$$(nproc) -t $$'\t' -S1G -k1 -k2 -o pairs.txt wiktionary-pairs.txt
+
+wiktionary: enwiktionary-20170201-unfiltered.tsv
+	../wiktionary.awk -v RELATION=SYNONYM enwiktionary-20170201-unfiltered.tsv | sed -e 's/ {2,}//g' >wiktionary-pairs.txt
 
 enwiktionary-20170201.tsv:
 	curl -sLO 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201.tsv'
@@ -13,8 +17,8 @@ enwiktionary-20170201-unfiltered.tsv:
 	curl -sLO 'http://depot.nlpub.ru/wiktionary/enwiktionary-20170201-unfiltered.tsv'
 
 graph: raw
-	@echo "# Generating the word graph."
-	./edges.sh
+	../count.awk pairs.txt > edges.count.txt
+	sed -re 's/[[:digit:]]+$$/1/g' edges.count.txt > edges.ones.txt
 
 gold: wordnet twsi
 
@@ -23,7 +27,6 @@ wordnet: wordnet-synsets.csv
 	../../pairs.awk wordnet-synsets.tsv >wordnet-pairs.txt
 
 wordnet-synsets.csv:
-	@echo "# Downloading the processed WordNet."	
 	curl -sLO http://panchenko.me/data/joint/watset/wordnet-synsets.csv
 
 twsi: twsi-synsets.csv
@@ -31,7 +34,6 @@ twsi: twsi-synsets.csv
 	../../pairs.awk twsi-synsets.tsv >twsi-pairs.txt
 
 twsi-synsets.csv:
-	@echo "# Downloading the processed TWSI."
 	curl -sLO http://panchenko.me/data/joint/watset/twsi-synsets.csv
 
 clean:

@@ -4,23 +4,31 @@ export SHELL:=/bin/bash
 
 all: raw graph gold
 
-raw: ruwiktionary.tsv abramov.dat unldc.tsv
+raw: wiktionary abramov unldc
+	sort --parallel=$$(nproc) -t $$'\t' -S1G -k1 -k2 -o pairs.txt {wiktionary,abramov,unldc}-pairs.txt
 
-ruwiktionary.tsv:
-	curl -sL 'http://depot.nlpub.ru/wiktionary/ruwiktionary-20170201.tsv' -o 'ruwiktionary.tsv'
+wiktionary: ruwiktionary-20170201.tsv
+	../wiktionary.awk -v RELATION=SYNONYM ruwiktionary-20170201.tsv | sed -e 's/ {2,}//g' >wiktionary-pairs.txt
 
-abramov.dat:
-	@echo "# Downloading the Abramov's dictionary."
+ruwiktionary-20170201.tsv:
+	curl -sLO 'http://depot.nlpub.ru/wiktionary/ruwiktionary-20170201.tsv'
+
+abramov: dict_ru_ru-0.3.7.oxt
+	unzip -p dict_ru_ru-0.3.7.oxt th_ru_RU_v2.dat | sed -e 's/||/|/g' | \
+	./abramov-pairs.awk | sed -e 's/ {2,}//g' >abramov-pairs.txt
+
+dict_ru_ru-0.3.7.oxt:
 	curl -sLO 'http://downloads.sourceforge.net/project/aoo-extensions/3233/3/dict_ru_ru-0.3.7.oxt'
-	unzip -p dict_ru_ru-0.3.7.oxt th_ru_RU_v2.dat >abramov.dat
+
+unldc: unldc.tsv
+	./unldc-pairs.awk unldc.tsv | sed -e 's/ {2,}//g' >unldc-pairs.txt
 
 unldc.tsv:
-	@echo "# Downloading the UNLDC synsets."
 	curl -sL 'https://github.com/dikonov/Universal-Dictionary-of-Concepts/raw/master/data/misc/russian-synsets.csv' -o unldc.tsv
 
 graph: raw
-	@echo "# Generating the word graph."
-	./edges.sh
+	../count.awk pairs.txt > edges.count.txt
+	sed -re 's/[[:digit:]]+$$/1/g' edges.count.txt > edges.ones.txt
 
 gold: ruthes rwn yarn
 
@@ -45,7 +53,6 @@ yarn: yarn.xml
 	../../pairs.awk yarn-synsets.tsv >yarn-pairs.txt
 
 yarn.xml:
-	@echo "# Downloading the YARN dump."
 	curl -sLO https://russianword.net/yarn.xml
 
 clean:

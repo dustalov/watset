@@ -5,12 +5,13 @@ BEGIN {
 }
 NR == 1 {
   if ($0 != "UTF-8") exit 1;
+  next;
 }
-NR > 1 && NR > NX {
+NR > NX {
   word = $1;
   NX   = NR + $2;
 }
-NR > 1 && NR <= NX {
+NR <= NX {
     if ($1 == "(синоним)") {
         $1 = word;
 
@@ -23,6 +24,10 @@ NR > 1 && NR <= NX {
                 gsub(/ /, "_", $i);
                 gsub(/ /, "_", $j);
                 if ($i != $j) print $i, $j ORS $j, $i;
+                if (!$i || !$j) {
+                    print NR, $i, $j >"/dev/stderr";
+                    exit 2;
+                }
             }
         }
     }
