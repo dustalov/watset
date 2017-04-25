@@ -2,7 +2,7 @@
 
 Watset is a local-global meta-algorithm for fuzzy graph clustering. The underlying principle is to discover the word senses based on a *local* graph clustering, and then to induce synsets using *global* clustering.
 
-Originally, Watset is designed for addressing the synset induction problem. Despite its simplicity, Watset shows excellent results, outperforming five competitive state-of-the-art methods in terms of F-score on three gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
+Originally, Watset is designed for addressing the synset induction problem. Despite its simplicity, Watset shows excellent results, outperforming five competitive state-of-the-art methods in terms of F-score on four gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
 
 ## Outline
 
@@ -14,7 +14,7 @@ More specifically, the method consists of five steps presented: (1) learning wor
 
 ## Citation
 
-* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): Watset: Automatic Induction of Synsets from a Graph of Synonyms. In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vancouver, Canada, Association for Computational Linguistics (2017) Accepted for publication.
+* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): [Watset: Automatic Induction of Synsets from a Graph of Synonyms](https://arxiv.org/abs/1704.07157). In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vancouver, Canada, Association for Computational Linguistics (2017) Accepted for publication.
 
 ```latex
 @inproceedings{Ustalov:17:acl,
