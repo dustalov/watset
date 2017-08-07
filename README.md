@@ -14,7 +14,7 @@ More specifically, the method consists of five steps presented: (1) learning wor
 
 ## Citation
 
-* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): [Watset: Automatic Induction of Synsets from a Graph of Synonyms](https://arxiv.org/abs/1704.07157). In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vancouver, Canada, Association for Computational Linguistics (2017) Accepted for publication.
+* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): [Watset: Automatic Induction of Synsets from a Graph of Synonyms](https://doi.org/10.18653/v1/P17-1145). In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vancouver, Canada, Association for Computational Linguistics (2017) 1579–1590
 
 ```latex
 @inproceedings{Ustalov:17:acl,
@@ -22,10 +22,11 @@ More specifically, the method consists of five steps presented: (1) learning wor
   title     = {{Watset: Automatic Induction of Synsets from a Graph of Synonyms}},
   booktitle = {Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
   year      = {2017},
+  pages     = {1579--1590},
+  doi       = {10.18653/v1/P17-1145},
   address   = {Vancouver, Canada},
   publisher = {Association for Computational Linguistics},
   language  = {english},
-  note      = {Accepted for publication.}
 }
 ```
 
