@@ -5,7 +5,7 @@ CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 EDGES="${EDGES:-$CWD/../../data/edges.txt}"
 
-java -Xms16G -Xmx16G -jar "$CWD/../../../maxmax/target/maxmax.jar" \
+java -Xms16G -Xmx16G -jar "$CWD/../../deps/maxmax.jar" \
      -in "$EDGES" -out "$CWD/../maxmax-clusters.txt"
 
 $CWD/../delabel.awk "$CWD/../maxmax-clusters.txt" > "$CWD/../maxmax-synsets.tsv"

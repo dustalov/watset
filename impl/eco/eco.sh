@@ -17,7 +17,7 @@ rm -fv "$CWD/../eco-mcl.txt.xz"
 for i in $(seq 30); do
   $CWD/noise.awk "$EDGES" > "$DATA/edges-$i.txt"
 
-  $CWD/../../../mcl-14-137/bin/mcl "$DATA/edges-$i.txt" \
+  $CWD/../../deps/mcl "$DATA/edges-$i.txt" \
     -te $(nproc) -I 1.6 --abc -o "$DATA/clusters-$i.txt" 2>/dev/null
 
   xz -T $(nproc) "$DATA/clusters-$i.txt" -c >>"$CWD/../eco-mcl.txt.xz"
