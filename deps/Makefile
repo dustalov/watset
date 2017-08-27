@@ -4,7 +4,7 @@ export MAVEN_OPTS:=-Dmaven.test.skip=true -Dmaven.javadoc.skip=true
 chinese-whispers.jar: chinese-whispers-master.zip
 	rm -rf chinese-whispers-master
 	unzip chinese-whispers-master.zip 
-	cd chinese-whispers-master && mvn -T $$(nproc) package
+	mvn -f chinese-whispers-master/pom.xml -T $$(nproc) package
 	mv -fv chinese-whispers-master/target/chinese-whispers.jar .
 
 chinese-whispers-master.zip:
@@ -13,7 +13,7 @@ chinese-whispers-master.zip:
 maxmax.jar: maxmax-master.zip
 	rm -rf maxmax-master
 	unzip maxmax-master.zip
-	cd maxmax-master && mvn -T $$(nproc) package
+	mvn -f maxmax-master/pom.xml -T $$(nproc) package
 	mv -fv maxmax-master/target/maxmax.jar .
 
 maxmax-master.zip:
@@ -22,7 +22,9 @@ maxmax-master.zip:
 mcl: mcl-14-137.tar.gz
 	rm -rf mcl-14-137
 	tar zxf mcl-14-137.tar.gz
-	cd mcl-14-137 && ./configure --prefix="$(CURDIR)/mcl-14-137" && make -j$$(nproc) && make install
+	cd mcl-14-137 && ./configure --prefix="$(CURDIR)/mcl-14-137"
+	$(MAKE) -j$$(nproc) -C mcl-14-137 all
+	$(MAKE) -C mcl-14-137 install
 	mv -fv mcl-14-137/bin/mcl .
 
 mcl-14-137.tar.gz:
