@@ -4,6 +4,11 @@ Watset is a local-global meta-algorithm for fuzzy graph clustering. The underlyi
 
 Originally, Watset is designed for addressing the synset induction problem. Despite its simplicity, Watset shows excellent results, outperforming five competitive state-of-the-art methods in terms of F-score on four gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
 
+[![Dependency Status][gemnasium_badge]][gemnasium_link]
+
+[gemnasium_badge]: https://gemnasium.com/dustalov/watset.svg
+[gemnasium_link]: https://gemnasium.com/dustalov/watset
+
 ## Outline
 
 A synonymy dictionary can be perceived as a graph, where the nodes correspond to lexical entries (words) and the edges connect pairs of the nodes when the synonymy relation between them holds. The cliques in such a graph naturally form densely connected sets of synonyms corresponding to concepts. Given the fact that solving the clique problem exactly in a graph is NP-complete and that these graphs typically contain tens of thousands of nodes, it is reasonable to use efficient hard graph clustering algorithms, like MCL and CW, for finding a global segmentation of the graph.
