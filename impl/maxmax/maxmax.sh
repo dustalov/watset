@@ -3,8 +3,10 @@ export LANG=en_US.UTF-8 LC_COLLATE=C
 
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+EDGES="${EDGES:-$CWD/../../data/edges.txt}"
+
 java -Xms16G -Xmx16G -jar "$CWD/../../../maxmax/target/maxmax.jar" \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../maxmax-clusters.txt"
+     -in "$EDGES" -out "$CWD/../maxmax-clusters.txt"
 
 $CWD/../delabel.awk "$CWD/../maxmax-clusters.txt" > "$CWD/../maxmax-synsets.tsv"
 rm -fv "$CWD/../maxmax-clusters.txt"

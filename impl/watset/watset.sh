@@ -3,21 +3,23 @@ export LANG=en_US.UTF-8 LC_COLLATE=C
 
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+EDGES="${EDGES:-$CWD/../../data/edges.txt}"
+
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.wsi.WSI -clustering cw -cwOption TOP -N 200 -n 200 -e 0 \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-cw-top.txt" | grep -i process
+     -in "$EDGES" -out "$CWD/../watset-wsi-cw-top.txt" | grep -i process
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.wsi.WSI -clustering cw -cwOption DIST_LOG -N 200 -n 200 -e 0 \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-cw-log.txt" | grep -i process
+     -in "$EDGES" -out "$CWD/../watset-wsi-cw-log.txt" | grep -i process
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.wsi.WSI -clustering cw -cwOption DIST_NOLOG -N 200 -n 200 -e 0 \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-cw-nolog.txt" | grep -i process
+     -in "$EDGES" -out "$CWD/../watset-wsi-cw-nolog.txt" | grep -i process
 
 java -Xms16G -Xmx16G -cp "$CWD/../../../chinese-whispers/target/chinese-whispers.jar" \
      de.tudarmstadt.lt.wsi.WSI -clustering mcl -N 200 -n 200 -e 0 \
-     -in "$CWD/../../data/edges.txt" -out "$CWD/../watset-wsi-mcl.txt" | grep -i process
+     -in "$EDGES" -out "$CWD/../watset-wsi-mcl.txt" | grep -i process
 
 for setup in cw-top cw-log cw-nolog mcl; do
   $CWD/disambiguate.py "$CWD/../watset-wsi-$setup.txt" > "$CWD/../watset-$setup-senses.txt"
