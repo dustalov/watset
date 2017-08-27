@@ -2,8 +2,8 @@
 
 import argparse
 import sys
-from gensim.models.word2vec import Word2Vec
 import csv
+from gensim.models import KeyedVectors
 
 from signal import signal, SIGINT
 signal(SIGINT, lambda signum, frame: sys.exit(1))
@@ -13,9 +13,9 @@ parser.add_argument('--sim', type=float, default=.3)
 parser.add_argument('w2v', type=argparse.FileType('rb'))
 args = parser.parse_args()
 
-w2v = Word2Vec.load_word2vec_format(args.w2v, binary=True, unicode_errors='ignore')
+w2v = KeyedVectors.load_word2vec_format(args.w2v, binary=True, unicode_errors='ignore')
 w2v.init_sims(replace=True)
-print('Using %d word2vec dimensions from "%s".' % (w2v.layer1_size, sys.argv[1]), file=sys.stderr)
+print('Using %d word2vec dimensions from "%s".' % (w2v.vector_size, sys.argv[1]), file=sys.stderr)
 
 reader = csv.reader(sys.stdin, delimiter='\t', quoting=csv.QUOTE_NONE)
 
