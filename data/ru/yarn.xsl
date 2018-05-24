@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:yarn="http://russianword.net">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:yarn="https://russianword.net">
   <xsl:output method="text" encoding="utf-8"/>
   <xsl:strip-space elements="*"/>
   <xsl:key name="words" match="/yarn:yarn/yarn:words/yarn:wordEntry" use="@id"/>
