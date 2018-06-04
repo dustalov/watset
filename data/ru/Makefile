@@ -38,7 +38,7 @@ ruthes: ruthes.xml
 
 ruthes.xml:
 	@echo "# Assuming that you have RuThes in the directory ${CURDIR}/ruthes-v2."
-	./ruthes-stub.awk ruthes-v2/*.xml >ruthes.xml
+	./ruthes-stub.awk ruthes-v2/*.xml >ruthes.xml || rm -f ruthes.xml
 
 rwn: rwn.xml
 	xsltproc rwn.xsl rwn.xml | ./ruthes-synsets.awk >rwn-synsets.tsv
@@ -46,7 +46,7 @@ rwn: rwn.xml
 
 rwn.xml:
 	@echo "# Assuming that you have RuWordNet in the directory ${CURDIR}/rwn-xml."
-	./ruthes-stub.awk -v TAG=rwn rwn-xml/*.*.xml >rwn.xml
+	./ruthes-stub.awk -v TAG=rwn rwn-xml/*.*.xml >rwn.xml || rm -f rwn.xml
 
 yarn: yarn.xml
 	xsltproc yarn.xsl yarn.xml | ./yarn-synsets.awk -v V=8 >yarn-synsets.tsv
