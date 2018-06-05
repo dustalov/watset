@@ -28,14 +28,14 @@ wordnet: wordnet-synsets.csv
 	../../pairs.awk wordnet-synsets.tsv >wordnet-pairs.txt
 
 wordnet-synsets.csv:
-	curl -sLO http://panchenko.me/data/joint/watset/wordnet-synsets.csv
+	curl -sLO http://panchenko.me/data/joint/watset/synsets/en/wordnet-synsets.csv
 
 twsi: twsi-synsets.csv
 	./csv-synsets.awk twsi-synsets.csv >twsi-synsets.tsv
 	../../pairs.awk twsi-synsets.tsv >twsi-pairs.txt
 
 twsi-synsets.csv:
-	curl -sLO http://panchenko.me/data/joint/watset/twsi-synsets.csv
+	curl -sLO http://panchenko.me/data/joint/watset/synsets/en/twsi-synsets.csv
 
 clean:
 	rm -fv *.txt *.tsv *.csv
