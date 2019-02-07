@@ -2,12 +2,9 @@
 
 Watset is a local-global meta-algorithm for fuzzy graph clustering. The underlying principle is to discover the word senses based on a *local* graph clustering, and then to induce synsets using *global* clustering.
 
-Originally, Watset is designed for addressing the synset induction problem. Despite its simplicity, Watset shows excellent results, outperforming five competitive state-of-the-art methods in terms of F-score on four gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
+Originally, Watset was designed for addressing the synset induction problem. Despite its simplicity, Watset shows excellent results, outperforming five competitive state-of-the-art methods in terms of F-score on four gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
 
-[![Dependency Status][gemnasium_badge]][gemnasium_link]
-
-[gemnasium_badge]: https://gemnasium.com/dustalov/watset.svg
-[gemnasium_link]: https://gemnasium.com/dustalov/watset
+The code in this repository is task-specific. We found that Watset works very well not just for synset induction, but for a lot of other fuzzy clustering tasks. **Please use a much faster and convenient implementation of Watset in Java: <https://github.com/nlpub/watset-java>.**
 
 ## Outline
 
@@ -19,17 +16,17 @@ More specifically, the method consists of five steps presented: (1) learning wor
 
 ## Citation
 
-* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): [Watset: Automatic Induction of Synsets from a Graph of Synonyms](https://doi.org/10.18653/v1/P17-1145). In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Vancouver, Canada, Association for Computational Linguistics (2017) 1579–1590
+* [Ustalov, D.](https://github.com/dustalov), [Panchenko, A.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/alexander-panchenko.html), [Biemann, C.](https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/chris-biemann.html): [Watset: Automatic Induction of Synsets from a Graph of Synonyms](https://doi.org/10.18653/v1/P17-1145). In: Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume&nbsp;1: Long Papers), Vancouver, BC, Canada, Association for Computational Linguistics (2017) 1579&ndash;1590
 
 ```latex
 @inproceedings{Ustalov:17:acl,
   author    = {Ustalov, Dmitry and Panchenko, Alexander and Biemann, Chris},
   title     = {{Watset: Automatic Induction of Synsets from a Graph of Synonyms}},
-  booktitle = {Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  booktitle = {Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume~1: Long Papers)},
   year      = {2017},
   pages     = {1579--1590},
   doi       = {10.18653/v1/P17-1145},
-  address   = {Vancouver, Canada},
+  address   = {Vancouver, BC, Canada},
   publisher = {Association for Computational Linguistics},
   language  = {english},
 }
