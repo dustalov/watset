@@ -33,7 +33,8 @@ eval/mcnemar_pairs.py pairwise-en-wordnet.pkl > pairwise-en-wordnet-mcnemar.tsv
 eval/pairwise.py --dump=pairwise-en-babelnet.pkl --significance --gold=../babelnet-extract/pairs.en.txt eval/en/**/*-pairs.txt | tee pairwise-en-babelnet.tsv | sort -t $'\t' -g -k9r | column -t
 eval/mcnemar_pairs.py pairwise-en-babelnet.pkl > pairwise-en-babelnet-mcnemar.tsv
 
-eval/pairwise.py --significance --gold=data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-twsi.tsv | sort -t $'\t' -g -k9r | column -t
+eval/pairwise.py --dump=pairwise-en-twsi.pkl --significance --gold=data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-twsi.tsv | sort -t $'\t' -g -k9r | column -t
+eval/mcnemar_pairs.py pairwise-en-twsi.pkl > pairwise-en-twsi-mcnemar.tsv
 
 eval/cluster.sh data/en/wordnet-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-wordnet.tsv | column -t
 NONMI=1 eval/cluster.sh ../babelnet-extract/synsets.en.tsv eval/en/**/*-synsets.tsv | tee cluster-en-babelnet.tsv | column -t
