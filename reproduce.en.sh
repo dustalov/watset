@@ -1,13 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 export LANG=en_US.UTF-8 LC_COLLATE=C
-
-cat <<EOF
-This script reproduces the results.
-EOF
-
-echo
-set -x
 
 rm -rfv eval/en
 
@@ -34,8 +27,12 @@ rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/en/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/en/w2v
 
-eval/pairwise.py --significance --gold=data/en/wordnet-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-wordnet.tsv | sort -t $'\t' -g -k9r | column -t
-eval/pairwise.py --significance --gold=../babelnet-extract/pairs.en.txt eval/en/**/*-pairs.txt | tee pairwise-en-babelnet.tsv | sort -t $'\t' -g -k9r | column -t
+eval/pairwise.py --dump=pairwise-en-wordnet.pkl --significance --gold=data/en/wordnet-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-wordnet.tsv | sort -t $'\t' -g -k9r | column -t
+eval/mcnemar_pairs.py pairwise-en-wordnet.pkl > pairwise-en-wordnet-mcnemar.tsv
+
+eval/pairwise.py --dump=pairwise-en-babelnet.pkl --significance --gold=../babelnet-extract/pairs.en.txt eval/en/**/*-pairs.txt | tee pairwise-en-babelnet.tsv | sort -t $'\t' -g -k9r | column -t
+eval/mcnemar_pairs.py pairwise-en-babelnet.pkl > pairwise-en-babelnet-mcnemar.tsv
+
 eval/pairwise.py --significance --gold=data/en/twsi-pairs.txt eval/en/**/*-pairs.txt | tee pairwise-en-twsi.tsv | sort -t $'\t' -g -k9r | column -t
 
 eval/cluster.sh data/en/wordnet-synsets.tsv eval/en/**/*-synsets.tsv | tee cluster-en-wordnet.tsv | column -t

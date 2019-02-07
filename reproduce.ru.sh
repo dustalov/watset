@@ -1,13 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 export LANG=en_US.UTF-8 LC_COLLATE=C
-
-cat <<EOF
-This script reproduces the results.
-EOF
-
-echo
-set -x
 
 rm -rfv eval/ru
 
@@ -34,8 +27,11 @@ rm -fv impl/{cpm,dummy}*.{txt,tsv}
 mkdir -p eval/ru/w2v
 mv -fv impl/*-pairs.txt impl/*-synsets.tsv eval/ru/w2v
 
-eval/pairwise.py --significance --gold=data/ru/rwn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-rwn.tsv | sort -t $'\t' -g -k9r | column -t
-eval/pairwise.py --significance --gold=data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k9r | column -t
+eval/pairwise.py --dump=pairwise-ru-rwn.pkl --significance --gold=data/ru/rwn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-rwn.tsv | sort -t $'\t' -g -k9r | column -t
+eval/mcnemar_pairs.py pairwise-ru-rwn.pkl > pairwise-ru-rwn-mcnemar.tsv
+
+eval/pairwise.py --dump=pairwise-ru-yarn.pkl --significance --gold=data/ru/yarn-pairs.txt eval/ru/**/*-pairs.txt | tee pairwise-ru-yarn.tsv | sort -t $'\t' -g -k9r | column -t
+eval/mcnemar_pairs.py pairwise-ru-yarn.pkl > pairwise-ru-yarn-mcnemar.tsv
 
 eval/cluster.sh data/ru/rwn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-rwn.tsv | column -t
 eval/cluster.sh data/ru/yarn-synsets.tsv eval/ru/**/*-synsets.tsv | tee cluster-ru-yarn.tsv | column -t
