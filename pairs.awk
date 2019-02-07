@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 BEGIN {
     FS = OFS = "\t";
     if (length(T) == 0) T = 150;

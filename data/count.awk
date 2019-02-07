@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 # echo -e 'a\tb\na\tb\na\tc' | ./count.awk
 BEGIN {
     FS = OFS = "\t";

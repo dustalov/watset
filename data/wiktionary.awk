@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 BEGIN {
     FS = OFS = "\t";
     if (length(RELATION) == 0) exit 1;

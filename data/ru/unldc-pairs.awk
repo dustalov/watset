@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 # echo -e 'words\ncar;auto;ride' | ./00-extract.awk
 BEGIN {
     FS = OFS = "\t";

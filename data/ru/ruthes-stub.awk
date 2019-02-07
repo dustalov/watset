@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 BEGIN {
     if (length(TAG) == 0) TAG = "ruthes";
     print "<" TAG ">";
