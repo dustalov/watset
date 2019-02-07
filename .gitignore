@@ -63,6 +63,9 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+# PyCharm
+.idea
+
 # PyBuilder
 target/
 
@@ -91,3 +94,4 @@ ENV/
 *.ipynb
 *.tsv
 *.swp
+*.pkl
