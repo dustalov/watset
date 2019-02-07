@@ -34,7 +34,7 @@ with ProcessPoolExecutor() as executor:
 
     for i, future in enumerate(as_completed(futures)):
         (path1, path2), pvalue = future.result()
-        print('%s\t%s\t%.6f' % (path1, path2, pvalue))
+        print('%s\t%s\t%.6f\t%d' % (path1, path2, pvalue, int(pvalue < args.alpha)))
 
         if (i + 1) % 100 == 0:
             print('%d pairs out of %d done.' % (i + 1, len(pairs)), file=sys.stderr)
