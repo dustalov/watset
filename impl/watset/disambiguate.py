@@ -1,14 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import csv
 import sys
 from collections import defaultdict, Counter
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from signal import signal, SIGINT
+
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as sim
-import concurrent.futures
 
-from signal import signal, SIGINT
 signal(SIGINT, lambda signum, frame: sys.exit(1))
 
 parser = argparse.ArgumentParser()
@@ -16,7 +17,7 @@ parser.add_argument('wsi', type=argparse.FileType('r'))
 args = parser.parse_args()
 
 wsi = defaultdict(dict)
-D   = []
+D = []
 
 with args.wsi as f:
     reader = csv.reader(f, delimiter='\t', quoting=csv.QUOTE_NONE)
@@ -34,6 +35,7 @@ with args.wsi as f:
 
 v = DictVectorizer().fit(D)
 
+
 def emit(word):
     senses = {}
 
@@ -45,7 +47,8 @@ def emit(word):
         vector = v.transform({**words, **{word: 1.}})
 
         for neighbour, weight in words.items():
-            candidates = Counter({nsid: sim(v.transform(neighbours), vector).item(0) for nsid, neighbours in wsi[neighbour].items()})
+            candidates = Counter(
+                {nsid: sim(v.transform(neighbours), vector).item(0) for nsid, neighbours in wsi[neighbour].items()})
 
             if not candidates:
                 print('Missing candidates for "%s": "%s".' % (word, neighbour), file=sys.stderr)
@@ -56,14 +59,15 @@ def emit(word):
                     nsense = '%s#%d' % (neighbour, nsid)
                     senses[sense][nsense] = weight
                 else:
-                    print('Can not estimate the sense for "%s": "%s".' % (word, neighbour), file=sys.stderr)
+                    print('Cannot estimate the sense for "%s": "%s".' % (word, neighbour), file=sys.stderr)
 
     return senses
 
-with concurrent.futures.ProcessPoolExecutor() as executor:
+
+with ProcessPoolExecutor() as executor:
     futures = (executor.submit(emit, word) for word in wsi)
 
-    for i, future in enumerate(concurrent.futures.as_completed(futures)):
+    for i, future in enumerate(as_completed(futures)):
         senses = future.result()
 
         for sense, nsenses in senses.items():

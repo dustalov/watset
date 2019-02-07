@@ -4,10 +4,11 @@ import argparse
 import csv
 import itertools
 import pickle
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 from collections import defaultdict
+from concurrent.futures import ProcessPoolExecutor
+
 from scipy.stats import wilcoxon
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
@@ -18,6 +19,7 @@ parser.add_argument('path', nargs='+')
 args = parser.parse_args()
 
 METRICS = {metric: globals()[metric + '_score'] for metric in ('precision', 'recall', 'f1')}
+
 
 def synonyms(path):
     pairs = set()
@@ -32,11 +34,13 @@ def synonyms(path):
 
     return pairs
 
+
 def words(pairs):
     return {w for w, _ in pairs} | {w for _, w in pairs}
 
+
 with ProcessPoolExecutor() as executor:
-    paths     = args.path + [args.gold]
+    paths = args.path + [args.gold]
     resources = {path: pairs for path, pairs in zip(paths, executor.map(synonyms, paths))}
 
 gold = resources.pop(args.gold)
@@ -44,7 +48,7 @@ gold = resources.pop(args.gold)
 lexicon = words(gold) & set.union(*(words(pairs) for pairs in resources.values()))
 
 union = [pair for pair in gold | set.union(*resources.values()) if pair[0] in lexicon and pair[1] in lexicon]
-true  = [int(pair in gold) for pair in union]
+true = [int(pair in gold) for pair in union]
 
 lexicon = sorted(lexicon)
 
@@ -54,11 +58,13 @@ for pair in union:
     for word in pair:
         index[word].append(pair)
 
+
 def wordwise(resource, word):
     word_true = [int(pair in resource) for pair in index[word]]
-    word_pred = [int(pair in gold)     for pair in index[word]]
+    word_pred = [int(pair in gold) for pair in index[word]]
 
     return (word_true, word_pred)
+
 
 def scores(resource):
     if not args.significance:
@@ -68,30 +74,34 @@ def scores(resource):
 
     return {metric: [score(*true_pred) for true_pred in labels] for metric, score in METRICS.items()}
 
+
 def evaluate(path):
     pred = [int(pair in resources[path]) for pair in union]
 
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
 
     return {
-        'tn':        tn,
-        'fp':        fp,
-        'fn':        fn,
-        'tp':        tp,
+        'tn': tn,
+        'fp': fp,
+        'fn': fn,
+        'tp': tp,
         'precision': precision_score(true, pred),
-        'recall':    recall_score(true, pred),
-        'f1':        f1_score(true, pred),
-        'scores':    scores(resources[path]),
-        'pred':      pred if args.dump else None,
+        'recall': recall_score(true, pred),
+        'f1': f1_score(true, pred),
+        'scores': scores(resources[path]),
+        'pred': pred if args.dump else None,
     }
+
 
 with ProcessPoolExecutor() as executor:
     results = {path: result for path, result in zip(resources.keys(), executor.map(evaluate, resources))}
+
 
 def pairwise(iterable):
     a, b = itertools.tee(iterable)
     next(b, None)
     return zip(a, b)
+
 
 def significance(metric):
     if not args.significance:
@@ -112,6 +122,7 @@ def significance(metric):
 
     return ranks
 
+
 with ProcessPoolExecutor() as executor:
     ranks = {metric: result for metric, result in zip(METRICS, executor.map(significance, METRICS))}
 
@@ -119,7 +130,8 @@ if args.dump:
     dump = {'union': union, 'true': true, 'results': results}
     pickle.dump(dump, args.dump)
 
-print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
+print('\t'.join(
+    ('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
 
 for path, values in results.items():
     print('\t'.join((
@@ -133,6 +145,6 @@ for path, values in results.items():
         str(values['recall']),
         str(values['f1']),
         str(ranks['precision'].get(path, 0)),
-        str(ranks['recall'   ].get(path, 0)),
-        str(ranks['f1'       ].get(path, 0))
+        str(ranks['recall'].get(path, 0)),
+        str(ranks['f1'].get(path, 0))
     )))
