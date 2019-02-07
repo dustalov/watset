@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import csv
 import itertools
-from concurrent.futures import ProcessPoolExecutor
+import pickle
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 from collections import defaultdict
 from scipy.stats import wilcoxon
@@ -11,6 +12,7 @@ from scipy.stats import wilcoxon
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
 parser.add_argument('--significance', action='store_true')
+parser.add_argument('--dump', type=argparse.FileType('wb'))
 parser.add_argument('--alpha', nargs='?', type=float, default=0.01)
 parser.add_argument('path', nargs='+')
 args = parser.parse_args()
@@ -79,7 +81,8 @@ def evaluate(path):
         'precision': precision_score(true, pred),
         'recall':    recall_score(true, pred),
         'f1':        f1_score(true, pred),
-        'scores':    scores(resources[path])
+        'scores':    scores(resources[path]),
+        'pred':      pred if args.dump else None,
     }
 
 with ProcessPoolExecutor() as executor:
@@ -111,6 +114,10 @@ def significance(metric):
 
 with ProcessPoolExecutor() as executor:
     ranks = {metric: result for metric, result in zip(METRICS, executor.map(significance, METRICS))}
+
+if args.dump:
+    dump = {'union': union, 'true': true, 'results': results}
+    pickle.dump(dump, args.dump)
 
 print('\t'.join(('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
 
