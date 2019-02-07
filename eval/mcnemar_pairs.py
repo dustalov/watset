@@ -22,10 +22,8 @@ def evaluate(path1, path2):
     y_pred_1, y_pred_2 = results[path1]['pred'], results[path2]['pred']
 
     table = [[0, 0], [0, 0]]
-    table[0][0] = sum(1 if y_pred_1[i] == 1 and y_pred_2[i] == 1 else 0 for i in range(len(y_pred_1)))
     table[0][1] = sum(1 if y_pred_1[i] == 1 and y_pred_2[i] == 0 else 0 for i in range(len(y_pred_1)))
     table[1][0] = sum(1 if y_pred_1[i] == 0 and y_pred_2[i] == 1 else 0 for i in range(len(y_pred_1)))
-    table[1][1] = sum(1 if y_pred_1[i] == 0 and y_pred_2[i] == 0 else 0 for i in range(len(y_pred_1)))
 
     return (path1, path2), mcnemar(table).pvalue
 
