@@ -8,7 +8,7 @@ from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 
 from scipy.stats import wilcoxon
-from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
@@ -17,8 +17,6 @@ parser.add_argument('--dump', type=argparse.FileType('wb'))
 parser.add_argument('--alpha', nargs='?', type=float, default=0.01)
 parser.add_argument('path', nargs='+')
 args = parser.parse_args()
-
-METRICS = {metric: globals()[metric + '_score'] for metric in ('precision', 'recall', 'f1')}
 
 
 def synonyms(path):
@@ -72,22 +70,33 @@ def scores(resource):
 
     labels = [wordwise(resource, word) for word in lexicon]
 
-    return {metric: [score(*true_pred) for true_pred in labels] for metric, score in METRICS.items()}
+    scores = {score: [None] * len(labels) for score in ('precision', 'recall', 'f1')}
+
+    for i, (true, pred) in enumerate(labels):
+        precision, recall, f1, _ = precision_recall_fscore_support(true, pred, average='binary')
+
+        # Cast float64 and float just to float.
+        scores['precision'][i] = float(precision)
+        scores['recall'][i] = float(recall)
+        scores['f1'][i] = float(f1)
+
+    return scores
 
 
 def evaluate(path):
     pred = [int(pair in resources[path]) for pair in union]
 
     tn, fp, fn, tp = confusion_matrix(true, pred).ravel()
+    precision, recall, f1, _ = precision_recall_fscore_support(true, pred, average='binary')
 
     return {
-        'tn': tn,
-        'fp': fp,
-        'fn': fn,
-        'tp': tp,
-        'precision': precision_score(true, pred),
-        'recall': recall_score(true, pred),
-        'f1': f1_score(true, pred),
+        'tn': tn.item(),
+        'fp': fp.item(),
+        'fn': fn.item(),
+        'tp': tp.item(),
+        'precision': precision.item(),
+        'recall': recall.item(),
+        'f1': f1.item(),
         'scores': scores(resources[path]),
         'pred': pred if args.dump else None,
     }
@@ -105,7 +114,7 @@ def pairwise(iterable):
 
 def significance(metric):
     if not args.significance:
-        return {}
+        return metric, {}
 
     desc, rank = sorted(results.items(), key=lambda item: item[1][metric], reverse=True), 1
 
@@ -120,11 +129,11 @@ def significance(metric):
 
         ranks[path2] = rank
 
-    return ranks
+    return metric, ranks
 
 
 with ProcessPoolExecutor() as executor:
-    ranks = {metric: result for metric, result in zip(METRICS, executor.map(significance, METRICS))}
+    ranks = {metric: result for metric, result in executor.map(significance, ('precision', 'recall', 'f1'))}
 
 if args.dump:
     dump = {'union': union, 'true': true, 'results': results}
