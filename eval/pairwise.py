@@ -136,7 +136,7 @@ with ProcessPoolExecutor() as executor:
     ranks = {metric: result for metric, result in executor.map(significance, ('precision', 'recall', 'f1'))}
 
 if args.dump:
-    dump = {'union': union, 'true': true, 'results': results}
+    dump = {'lexicon': lexicon, 'union': union, 'true': true, 'results': results}
     pickle.dump(dump, args.dump)
 
 print('\t'.join(
