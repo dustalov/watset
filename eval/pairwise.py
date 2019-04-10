@@ -4,11 +4,18 @@ import argparse
 import csv
 import itertools
 import pickle
+import warnings
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 
+import numpy as np
 from scipy.stats import wilcoxon
+from sklearn.exceptions import UndefinedMetricWarning
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from statsmodels.stats.contingency_tables import mcnemar
+
+# The metrics can be ill-defined, but this is OK.
+warnings.simplefilter('ignore', category=UndefinedMetricWarning)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gold', required=True)
@@ -134,13 +141,28 @@ def significance(metric):
 
 with ProcessPoolExecutor() as executor:
     ranks = {metric: result for metric, result in executor.map(significance, ('precision', 'recall', 'f1'))}
+    ranks['mcnemar'] = {}
+
+if args.significance:
+    desc, rank = sorted(results.items(), key=lambda item: item[1]['f1'], reverse=True), 1
+
+    for (path1, results1), (path2, results2) in pairwise(desc):
+        ranks['mcnemar'][path1] = rank
+
+        table = np.flip(confusion_matrix(results1['pred'], results2['pred']))
+        rank += int(mcnemar(table).pvalue < args.alpha)
+
+        ranks['mcnemar'][path2] = rank
 
 if args.dump:
     dump = {'lexicon': lexicon, 'union': union, 'true': true, 'results': results}
     pickle.dump(dump, args.dump)
 
-print('\t'.join(
-    ('path', 'pairs', 'tn', 'fp', 'fn', 'tp', 'precision', 'recall', 'f1', 'precision_rank', 'recall_rank', 'f1_rank')))
+print('\t'.join((
+    'path', 'pairs', 'tn', 'fp', 'fn', 'tp',
+    'precision', 'recall', 'f1',
+    'precision_rank', 'recall_rank', 'f1_rank', 'mcnemar_rank'
+)))
 
 for path, values in results.items():
     print('\t'.join((
@@ -155,5 +177,6 @@ for path, values in results.items():
         str(values['f1']),
         str(ranks['precision'].get(path, 0)),
         str(ranks['recall'].get(path, 0)),
-        str(ranks['f1'].get(path, 0))
+        str(ranks['f1'].get(path, 0)),
+        str(ranks['mcnemar'].get(path, 0)),
     )))
