@@ -4,9 +4,7 @@ Watset is a local-global meta-algorithm for [fuzzy graph clustering](https://en.
 
 Originally, Watset was designed for addressing the synset induction problem, which is indicated in the corresponding [ACL&nbsp;2017](https://doi.org/10.18653/v1/P17-1145) paper. Despite its simplicity, Watset shows [excellent results](https://github.com/dustalov/watset/releases), outperforming five competitive state-of-the-art methods in terms of F-score on four gold standard datasets for English and Russian derived from large-scale manually constructed lexical resources.
 
-We found that Watset works very well not just for synset induction, but for a lot of other fuzzy clustering tasks.
-
-Please use a much faster and convenient implementation of Watset in Java: <https://github.com/nlpub/watset-java>.
+We found that Watset works very well not just for synset induction, but for a lot of other fuzzy clustering tasks. Please use a much faster and convenient implementation of Watset in Java: <https://github.com/nlpub/watset-java>.
 
 ## Citation
 
